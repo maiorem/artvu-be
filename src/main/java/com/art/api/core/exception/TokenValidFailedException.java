@@ -1,4 +1,4 @@
-package com.art.api.core.response.exception;
+package com.art.api.core.exception;
 
 import com.art.api.core.response.ErrorCode;
 import com.art.api.core.response.ExceptionIf;

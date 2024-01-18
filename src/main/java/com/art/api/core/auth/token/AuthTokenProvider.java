@@ -1,6 +1,6 @@
 package com.art.api.core.auth.token;
 
-import com.art.api.core.response.exception.TokenValidFailedException;
+import com.art.api.core.exception.TokenValidFailedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
