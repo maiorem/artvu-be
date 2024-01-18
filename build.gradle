@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.1'
     id 'io.spring.dependency-management' version '1.1.4'
-    id "org.flywaydb.flyway" version "7.15.0"
 }
 
 group = 'com.art'
@@ -67,10 +66,4 @@ tasks.withType(JavaCompile) {
 
 clean.doLast {
     file(querydslDir).deleteDir()
-}
-
-flyway {
-    url = 'jdbc:mysql://localhost:3306/artvu'
-    user = 'artvu'
-    password = '1234'
 }
