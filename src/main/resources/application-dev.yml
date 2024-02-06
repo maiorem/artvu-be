@@ -1,24 +1,18 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/artvu
-    username: artvu
-    password: 1234
+    url: jdbc:mysql://100.100.30.52:3306/dartvu
+    username: appartvu
+    password: System01!!
 
   jpa:
     properties:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     show-sql: true
     defer-datasource-initialization: true
-
-  cors:
-    allowed-headers: '*'
-    max-age: 3600
-    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
-    allowed-origins: '*'
 
 springdoc:
   show-login-endpoint: true
