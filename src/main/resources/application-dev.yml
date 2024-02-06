@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://100.100.30.52:3306/dartvu
+    url: jdbc:mysql://100.100.30.52:23306/dartvu
     username: appartvu
     password: System01!!
 
@@ -10,7 +10,7 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     show-sql: true
     defer-datasource-initialization: true
 
