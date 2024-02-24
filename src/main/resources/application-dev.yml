@@ -1,3 +1,5 @@
+
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -32,3 +34,5 @@ logging:
   pattern:
     dateformat: Asia/Seoul
 
+server:
+  port: 8181
