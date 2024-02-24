@@ -17,8 +17,18 @@ spring:
 cors:
   allowed-headers: '*'
   max-age: 3600
-  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+  allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
   allowed-origins: '*'
+
+logging:
+  file:
+    name: service.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: service.%d{yyyy-MM-dd}-%i.log
+      max-file-size: 10MB
+  pattern:
+    dateformat: Asia/Seoul
 
 #운영에서 swagger 제공 안함
 springdoc:

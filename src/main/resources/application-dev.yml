@@ -10,9 +10,25 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     show-sql: true
     defer-datasource-initialization: true
 
+  cors:
+    allowed-headers: '*'
+    max-age: 3600
+    allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+    allowed-origins: '*'
 springdoc:
   show-login-endpoint: true
+
+logging:
+  file:
+    name: service.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: service.%d{yyyy-MM-dd}-%i.log
+      max-file-size: 10KB
+  pattern:
+    dateformat: Asia/Seoul
+
