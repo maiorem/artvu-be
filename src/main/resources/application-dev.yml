@@ -26,11 +26,10 @@ springdoc:
 
 logging:
   file:
-    path: /back-end/logfiles
+    name: service.log
   logback:
     rollingpolicy:
       file-name-pattern: service.%d{yyyy-MM-dd}-%i.log
       max-file-size: 10KB
   pattern:
     dateformat: Asia/Seoul
-
