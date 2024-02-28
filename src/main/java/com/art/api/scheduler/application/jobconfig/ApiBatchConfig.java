@@ -1,9 +1,6 @@
 package com.art.api.scheduler.application.jobconfig;
 
 import com.art.api.scheduler.domain.entity.KopisArtList;
-import com.art.api.scheduler.infrastructure.repository.KopisArtDetailApiRepository;
-import com.art.api.scheduler.infrastructure.repository.KopisArtFacDetailApiRepository;
-import com.art.api.scheduler.infrastructure.repository.KopisArtListApiRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
