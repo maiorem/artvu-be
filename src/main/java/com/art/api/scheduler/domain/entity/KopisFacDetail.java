@@ -5,11 +5,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Entity
 @Table(name = "TB_KOPIS_FAC_DETAIL")
 @Comment("[KOPIS] 공연시설상세내용")
+@Builder
+@RequiredArgsConstructor
 public class KopisFacDetail extends BaseRegDate {
 
     @Id
