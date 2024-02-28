@@ -8,3 +8,4 @@
 //@Repository
 //public interface KopisArtListApiRepository extends JpaRepository<KopisArtList, String> {
 //}
+//
