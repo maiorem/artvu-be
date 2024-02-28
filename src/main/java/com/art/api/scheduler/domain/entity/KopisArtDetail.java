@@ -5,18 +5,22 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @Table(name = "TB_KOPIS_ART_DETAIL")
 @Comment("[KOPIS] 공연상세내용")
 @Builder
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class KopisArtDetail extends BaseRegDate {
 
     @Id

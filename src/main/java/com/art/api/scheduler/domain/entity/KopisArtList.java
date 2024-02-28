@@ -2,15 +2,19 @@ package com.art.api.scheduler.domain.entity;
 
 import com.art.api.scheduler.domain.BaseRegDate;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Comment;
 
+@Getter
 @Entity
 @Table(name = "TB_KOPIS_ART_LIST")
 @Comment("[KOPIS] 공연목록")
 @Builder
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class KopisArtList extends BaseRegDate {
 
     @Id
@@ -44,7 +48,7 @@ public class KopisArtList extends BaseRegDate {
 
     @Column(length = 20, name = "GENRE_NM")
     @Comment("장르")
-    private String GenreNm;
+    private String genreNm;
 
     @Column(length = 10, name = "STATUS")
     @Comment("공연상태")
