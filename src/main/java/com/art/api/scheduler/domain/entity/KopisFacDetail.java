@@ -1,10 +1,7 @@
 package com.art.api.scheduler.domain.entity;
 
 import com.art.api.scheduler.domain.BaseRegDate;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +15,7 @@ import org.hibernate.annotations.Comment;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
+@IdClass(ArtFacId.class)
 public class KopisFacDetail extends BaseRegDate {
 
     @Id
