@@ -15,6 +15,7 @@ import org.hibernate.annotations.Comment;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
+@IdClass(ArtId.class)
 public class KopisArtList extends BaseRegDate {
 
     @Id

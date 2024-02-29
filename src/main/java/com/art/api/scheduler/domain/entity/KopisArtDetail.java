@@ -1,10 +1,7 @@
 package com.art.api.scheduler.domain.entity;
 
 import com.art.api.scheduler.domain.BaseRegDate;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +10,7 @@ import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Entity
@@ -21,6 +19,7 @@ import java.time.LocalDateTime;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
+@IdClass(ArtDeilId.class)
 public class KopisArtDetail extends BaseRegDate {
 
     @Id
@@ -133,5 +132,8 @@ public class KopisArtDetail extends BaseRegDate {
     @Comment("최종수정일")
     @LastModifiedDate
     private LocalDateTime lastModDt;
+
+    @OneToMany(mappedBy = "kopisArtDetail")
+    private List<KopisArtIntroImgList> introImgListList;
 
 }
