@@ -17,6 +17,8 @@ spring:
   batch:
     jdbc:
       initialize-schema: embedded
+  open-api:
+    secretKey: "9bc5a206710943769d657e163212035d"
 
   cors:
     allowed-headers: '*'
