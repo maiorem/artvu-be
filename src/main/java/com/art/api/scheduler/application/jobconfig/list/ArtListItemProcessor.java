@@ -1,29 +1,30 @@
 package com.art.api.scheduler.application.jobconfig.list;
 
 import com.art.api.scheduler.application.openApiRecords.KopisArtListResponse;
+import com.art.api.scheduler.domain.entity.KopisArtList;
 import org.springframework.batch.item.ItemProcessor;
 
-import java.text.DateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
-public class ArtListItemProcessor implements ItemProcessor<KopisArtListResponse, List<KopisArtListResponse>> {
+public class ArtListItemProcessor implements ItemProcessor<KopisArtListResponse, List<KopisArtList>> {
+
     @Override
-    public List<KopisArtListResponse> process(KopisArtListResponse item) throws Exception {
-        LocalDate performStrDt = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        LocalDate performEndDt = performStrDt.plusMonths(1);
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
+    public List<KopisArtList> process(KopisArtListResponse item) {
+        List<KopisArtListResponse.Dbs.Db> dataList = new ArrayList<>();
 
-        String strDt = performStrDt.format(dateFormat);
-        String endDt = performEndDt.format(dateFormat);
-
-
-
-
-
-        return null;
+        return dataList.stream().map(data -> KopisArtList.builder()
+                .artId(data.getMt20id())
+                .artNm(data.getPrfnm())
+                .artStrDt(data.getPrfpdfrom())
+                .artEndDt(data.getPrfpdto())
+                .artFacNm(data.getFcltynm())
+                .posterImgUrl(data.getPoster())
+                .artAreaNm(data.getArea())
+                .genreNm(data.getGenrenm())
+                .status(data.getPrfstate())
+                .openrunYn(data.getOpenrun())
+                .build()
+        ).toList();
     }
 }

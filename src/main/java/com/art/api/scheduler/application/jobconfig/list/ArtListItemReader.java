@@ -1,11 +1,11 @@
 package com.art.api.scheduler.application.jobconfig.list;
 
 import com.art.api.scheduler.application.openApiRecords.KopisArtListResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import lombok.RequiredArgsConstructor;
 import org.json.XML;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,27 +13,24 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
-@RequiredArgsConstructor
+@Slf4j
+@NoArgsConstructor
+@AllArgsConstructor
 public class ArtListItemReader implements ItemReader<KopisArtListResponse> {
 
-    private final WebClient webClient;
-
     @Value("${spring.open-api.secretKey}")
-    private final String secretKey;
+    private String secretKey;
 
-    private final String BASE_URL = "http://www.kopis.or.kr/openApi/restful/pblprfr";
-
-    private final String ROWS = "30";
 
     @Override
     public KopisArtListResponse read() {
+
+        String BASE_URL = "http://www.kopis.or.kr/openApi/restful/pblprfr";
+        String ROWS = "1000";
 
         LocalDate performStrDt = LocalDate.now(ZoneId.of("Asia/Seoul"));
         LocalDate performEndDt = performStrDt.plusMonths(1);
@@ -43,6 +40,10 @@ public class ArtListItemReader implements ItemReader<KopisArtListResponse> {
         String endDt = performEndDt.format(dateFormat);
 
         Gson gson = new Gson();
+        WebClient webClient = WebClient.builder()
+                .baseUrl(BASE_URL)
+                .build();
+
         Mono<String> response = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(BASE_URL)
@@ -61,6 +62,9 @@ public class ArtListItemReader implements ItemReader<KopisArtListResponse> {
 
         String xmlResult = response.block();
         JSONObject jsonResult = XML.toJSONObject(xmlResult);
+
+        log.debug("art list json : {}", jsonResult);
+
         KopisArtListResponse result = gson.fromJson(jsonResult.toString(), KopisArtListResponse.class);
 
         return result;
