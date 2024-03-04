@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.annotation.JobScope;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -40,6 +42,7 @@ public class ApiBatchConfig {
 
     // Step 1 (list)
     @Bean
+    @JobScope
     public Step listReaderStep() {
         return new StepBuilder("listReaderStep", jobRepository)
                 .<KopisArtListResponse, List<KopisArtList>>chunk(2, transactionManager)
@@ -50,16 +53,19 @@ public class ApiBatchConfig {
     }
 
     @Bean
+    @StepScope
     public ArtListItemReader listReader() {
         return new ArtListItemReader();
     }
 
     @Bean
+    @StepScope
     public ArtListItemProcessor listItemProcessor() {
         return new ArtListItemProcessor();
     }
 
     @Bean
+    @StepScope
     public ArtListItemWriter<KopisArtList> listArtListItemWriter() {
         JpaItemWriter<KopisArtList> writer = new JpaItemWriter<>();
         writer.setEntityManagerFactory(entityManager);
