@@ -1,15 +1,18 @@
 package com.art.api.scheduler.application.jobconfig.list;
 
 import com.art.api.scheduler.application.openApiRecords.KopisArtListResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
-import org.json.XML;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.xml.Jaxb2XmlDecoder;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -27,10 +30,10 @@ public class ArtListItemReader implements ItemReader<KopisArtListResponse> {
 
 
     @Override
-    public KopisArtListResponse read() {
+    public KopisArtListResponse read() throws JsonProcessingException {
 
         String BASE_URL = "http://www.kopis.or.kr/openApi/restful/pblprfr";
-        String ROWS = "1000";
+        String ROWS = "200";
 
         LocalDate performStrDt = LocalDate.now(ZoneId.of("Asia/Seoul"));
         LocalDate performEndDt = performStrDt.plusMonths(1);
@@ -39,19 +42,25 @@ public class ArtListItemReader implements ItemReader<KopisArtListResponse> {
         String strDt = performStrDt.format(dateFormat);
         String endDt = performEndDt.format(dateFormat);
 
-        Gson gson = new Gson();
-        WebClient webClient = WebClient.builder()
-                .baseUrl(BASE_URL)
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+                .codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs()
+                        .jaxb2Decoder(new Jaxb2XmlDecoder()))
                 .build();
 
-        Mono<String> response = webClient.get()
+        WebClient webClient = WebClient.builder()
+                .baseUrl(BASE_URL)
+                .exchangeStrategies(exchangeStrategies)
+                .build();
+
+        Mono<String> response = webClient
+                .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(BASE_URL)
                         .queryParam("service", secretKey)
                         .queryParam("stdate", strDt)
                         .queryParam("eddate", endDt)
                         .queryParam("cpage", "1")
                         .queryParam("rows", ROWS)
+                        .queryParam("shcate", "AAAA")
                         .queryParam("prstate", "02")
                         .queryParam("newsql", "Y")
                         .build())
@@ -61,11 +70,8 @@ public class ArtListItemReader implements ItemReader<KopisArtListResponse> {
                 .log();
 
         String xmlResult = response.block();
-        JSONObject jsonResult = XML.toJSONObject(xmlResult);
-
-        log.debug("art list json : {}", jsonResult);
-
-        KopisArtListResponse result = gson.fromJson(jsonResult.toString(), KopisArtListResponse.class);
+        ObjectMapper xmlMapper = new XmlMapper();
+        KopisArtListResponse result = xmlMapper.readValue(xmlResult, KopisArtListResponse.class);
 
         return result;
     }
