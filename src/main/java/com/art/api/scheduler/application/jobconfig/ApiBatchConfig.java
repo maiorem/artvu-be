@@ -10,10 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.JpaItemWriter;
@@ -25,25 +25,23 @@ import java.util.List;
 
 @Slf4j
 @Configuration
-@EnableBatchProcessing
 @RequiredArgsConstructor
 public class ApiBatchConfig {
-
-    private final JobRepository jobRepository;
-    private final PlatformTransactionManager transactionManager;
     private final EntityManagerFactory entityManager;
 
     @Bean
-    public Job listReaderJob(){
+    public Job listReaderJob(JobRepository jobRepository, Step listReaderStep){
+
         return new JobBuilder("listReaderJob", jobRepository)
-                .start(listReaderStep())
+                .incrementer(new RunIdIncrementer())
+                .start(listReaderStep)
                 .build();
     }
 
     // Step 1 (list)
     @Bean
     @JobScope
-    public Step listReaderStep() {
+    public Step listReaderStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new StepBuilder("listReaderStep", jobRepository)
                 .<KopisArtListResponse, List<KopisArtList>>chunk(2, transactionManager)
                 .reader(listReader())
