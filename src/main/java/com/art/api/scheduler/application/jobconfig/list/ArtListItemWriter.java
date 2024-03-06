@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.database.JpaItemWriter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -21,11 +22,11 @@ public class ArtListItemWriter<T> extends JpaItemWriter<List<T>> {
     public void write(Chunk<? extends List<T>> items) {
         log.info("art LIST WRITER ============================================== ");
 
-        Chunk<T> collect = new Chunk<T>();
+        List<T> collect = new ArrayList<>();
         for(List<T> list : items){
             collect.addAll(list);
         }
-        jpaItemWriter.write(collect);
+        jpaItemWriter.write((Chunk<? extends T>) collect);
     }
 
     @Override
