@@ -1,13 +1,13 @@
 package com.art.api.scheduler.application.jobconfig.list;
 
-import com.art.api.scheduler.application.openApiRecords.KopisArtListResponse;
+import com.art.api.scheduler.application.apiResponse.KopisArtListResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
+import org.json.XML;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -28,6 +28,7 @@ public class ArtListItemReader implements ItemReader<KopisArtListResponse> {
     @Value("${spring.open-api.secretKey}")
     private String secretKey;
 
+    int count = 0;
 
     @Override
     public KopisArtListResponse read() throws JsonProcessingException {
@@ -41,6 +42,8 @@ public class ArtListItemReader implements ItemReader<KopisArtListResponse> {
 
         String strDt = performStrDt.format(dateFormat);
         String endDt = performEndDt.format(dateFormat);
+
+        Gson gson = new Gson();
 
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
                 .codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs()
@@ -70,9 +73,13 @@ public class ArtListItemReader implements ItemReader<KopisArtListResponse> {
                 .log();
 
         String xmlResult = response.block();
-        ObjectMapper xmlMapper = new XmlMapper();
-        KopisArtListResponse result = xmlMapper.readValue(xmlResult, KopisArtListResponse.class);
+        JSONObject jsonResult = XML.toJSONObject(xmlResult);
+        KopisArtListResponse result = gson.fromJson(jsonResult.toString(), KopisArtListResponse.class);
 
-        return result;
+        count++;
+        log.info("art LIST READER ============================================== ");
+        log.info("art list info ::"+result.toString());
+
+        return count > 0 ? null : result;
     }
 }

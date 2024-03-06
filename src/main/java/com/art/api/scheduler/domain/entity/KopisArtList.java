@@ -1,12 +1,16 @@
 package com.art.api.scheduler.domain.entity;
 
 import com.art.api.scheduler.domain.BaseRegDate;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -16,12 +20,21 @@ import org.hibernate.annotations.Comment;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @IdClass(ArtId.class)
-public class KopisArtList extends BaseRegDate {
+public class KopisArtList {
 
     @Id
     @Column(length = 20, name = "ART_ID")
     @Comment("공연ID")
     private String artId;
+
+    @EqualsAndHashCode.Include
+    @Id
+    @Column(name = "REG_DT")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @CreatedDate
+    @Comment("수집일시")
+    private LocalDateTime regDt;
 
     @Column(length = 45, name = "ART_NM")
     @Comment("공연명")
