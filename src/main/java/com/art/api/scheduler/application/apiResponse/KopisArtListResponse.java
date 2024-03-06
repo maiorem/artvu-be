@@ -1,30 +1,35 @@
-package com.art.api.scheduler.application.openApiRecords;
+package com.art.api.scheduler.application.apiResponse;
 
-import com.art.api.scheduler.domain.entity.KopisArtList;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.xml.bind.annotation.XmlElement;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import lombok.*;
 
 import java.util.List;
 
 
-@Data
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class KopisArtListResponse{
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+public class KopisArtListResponse {
 
     private Dbs dbs;
 
-    @Data
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Dbs {
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ToString
+    public class Dbs {
 
         private List<Db> db;
 
-        @Data
-        @JsonIgnoreProperties(ignoreUnknown = true)
+        @Getter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @ToString
         public static class Db {
+
             private String mt20id; //공연ID
 
             private String prfnm;//공연명
@@ -44,8 +49,8 @@ public class KopisArtListResponse{
             private String prfstate;//공연상태
 
             private String openrun; //오픈런여부
-        }
 
+        }
     }
 
 }
