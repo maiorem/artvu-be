@@ -1,4 +1,4 @@
-package com.art.api.scheduler.application.facade;
+package com.art.api.scheduler.application.service;
 
 import com.art.api.scheduler.domain.entity.ArtId;
 import com.art.api.scheduler.domain.entity.KopisArtDetail;
@@ -14,26 +14,25 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ArtDetailItemFacade {
+public class ArtDetailService {
+
 
     private final KopisArtListApiRepository listApiRepository;
 
     private final KopisArtDetailApiRepository detailApiRepository;
 
-    public List<String> retrieveArtIdList() {
+    public List<String> artIdList() {
+
         List<KopisArtList> artList = listApiRepository.findAll();
-        List<String> results = new ArrayList<>();
+        List<String> kopisArtIdList = new ArrayList<>();
         for (KopisArtList kopisArtList : artList) {
             ArtId artId = ArtId.builder()
-                            .artId(kopisArtList.getArtId())
-                            .regDt(kopisArtList.getRegDt())
-                            .build();
+                    .artId(kopisArtList.getArtId())
+                    .regDt(kopisArtList.getRegDt())
+                    .build();
             Optional<KopisArtDetail> art = detailApiRepository.findById(artId);
-            results.add(art.get().getArtId());
+            kopisArtIdList.add(art.get().getArtId());
         }
-
-        return results;
+        return kopisArtIdList;
     }
-
-
 }

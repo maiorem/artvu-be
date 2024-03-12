@@ -21,7 +21,7 @@ public class KopisFacDetailResponse {
     @ToString
     public class Dbs {
 
-        private List<Db> db;
+        private Db db;
 
         @Getter
         @NoArgsConstructor

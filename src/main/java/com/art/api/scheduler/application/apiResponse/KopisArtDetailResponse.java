@@ -21,14 +21,13 @@ public class KopisArtDetailResponse {
     @ToString
     public class Dbs {
 
-        private List<Db> db;
+        private Db db;
 
         @Getter
         @NoArgsConstructor
         @AllArgsConstructor
         @ToString
         public static class Db {
-
 
             private String mt20id; //공연ID
 

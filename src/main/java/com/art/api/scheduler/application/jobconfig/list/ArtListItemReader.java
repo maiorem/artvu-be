@@ -2,10 +2,13 @@ package com.art.api.scheduler.application.jobconfig.list;
 
 import com.art.api.scheduler.application.apiResponse.KopisArtListResponse;
 import com.art.api.scheduler.application.constants.Constants;
+import com.art.api.scheduler.infrastructure.repository.KopisArtDetailApiRepository;
+import com.art.api.scheduler.infrastructure.repository.KopisArtListApiRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.json.XML;
@@ -23,18 +26,19 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ArtListItemReader implements ItemReader<KopisArtListResponse> {
 
     @Value("${spring.open-api.secretKey}")
     private String secretKey;
 
     int count = 0;
+    int cpage = 1;
 
     @Override
     public KopisArtListResponse read() throws JsonProcessingException {
 
+        String current_page = String.valueOf(cpage++);
         String ROWS = "200";
 
         LocalDateTime performStrDt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
@@ -63,7 +67,7 @@ public class ArtListItemReader implements ItemReader<KopisArtListResponse> {
                         .queryParam("service", secretKey)
                         .queryParam("stdate", strDt)
                         .queryParam("eddate", endDt)
-                        .queryParam("cpage", "1")
+                        .queryParam("cpage", current_page)
                         .queryParam("rows", ROWS)
                         .queryParam("shcate", "AAAA")
                         .queryParam("prstate", "02")
