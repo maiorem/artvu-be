@@ -35,8 +35,8 @@ public class ApiBatchConfig {
     public Job listReaderJob(JobRepository jobRepository, Step listStep){
 
         return new JobBuilder("listReaderJob", jobRepository)
-                .incrementer(new RunIdIncrementer())
                 .start(listStep)
+                .incrementer(new RunIdIncrementer())
                 .build();
     }
 
@@ -45,7 +45,7 @@ public class ApiBatchConfig {
     @JobScope
     public Step listStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new StepBuilder("listStep", jobRepository)
-                .<KopisArtListResponse, List<KopisArtList>>chunk(2, transactionManager)
+                .<KopisArtListResponse, List<KopisArtList>>chunk(100, transactionManager)
                 .reader(listItemReader())
                 .processor(listItemProcessor())
                 .writer(listItemWriter())
