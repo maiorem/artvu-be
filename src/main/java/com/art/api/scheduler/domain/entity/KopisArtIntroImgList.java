@@ -2,13 +2,19 @@ package com.art.api.scheduler.domain.entity;
 
 import com.art.api.scheduler.domain.BaseRegDate;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Getter
+@Builder
 @Entity
 @Table(name = "TB_KOPIS_ART_INTRO_IMG_LIST")
 @IdClass(ArtId.class)
+@RequiredArgsConstructor
+@AllArgsConstructor
 @Comment("[KOPIS] 공연소개이미지목록")
 public class KopisArtIntroImgList extends BaseRegDate {
 

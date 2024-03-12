@@ -105,7 +105,7 @@ public class KopisArtDetail extends BaseRegDate {
 
     @Column(length = 20, name = "GENRE_NM")
     @Comment("장르")
-    private String GenreNm;
+    private String genreNm;
 
     @Column(length = 10, name = "STATUS")
     @Comment("공연상태")
@@ -141,8 +141,11 @@ public class KopisArtDetail extends BaseRegDate {
 
     @Column(name = "LAST_MOD_DT")
     @Comment("최종수정일")
-    @LastModifiedDate
-    private LocalDateTime lastModDt;
+    private String lastModDt;
+
+    @Column(length = 500, name = "ART_TIME")
+    @Comment("공연시각")
+    private String artTime;
 
     @OneToMany(mappedBy = "kopisArtDetail")
     private List<KopisArtIntroImgList> introImgListList;

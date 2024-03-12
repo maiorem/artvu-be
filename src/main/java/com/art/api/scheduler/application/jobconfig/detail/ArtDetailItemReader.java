@@ -1,9 +1,8 @@
 package com.art.api.scheduler.application.jobconfig.detail;
 
 import com.art.api.scheduler.application.apiResponse.KopisArtDetailResponse;
-import com.art.api.scheduler.application.apiResponse.KopisArtListResponse;
 import com.art.api.scheduler.application.constants.Constants;
-import com.art.api.scheduler.application.facade.ArtDetailItemFacade;
+import com.art.api.scheduler.application.service.ArtDetailService;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArtDetailItemReader implements ItemReader<List<KopisArtDetailResponse>> {
 
-    private final ArtDetailItemFacade detailItemFacade;
+    private final ArtDetailService artDetailService;
 
     @Value("${spring.open-api.secretKey}")
     private String secretKey;
@@ -33,7 +32,8 @@ public class ArtDetailItemReader implements ItemReader<List<KopisArtDetailRespon
 
     @Override
     public List<KopisArtDetailResponse> read() throws Exception {
-        List<String> kopisArtIdList = detailItemFacade.retrieveArtIdList();
+
+        List<String> kopisArtIdList = artDetailService.artIdList();
         List<KopisArtDetailResponse> detailList = new ArrayList<>();
         Gson gson = new Gson();
 
@@ -69,8 +69,8 @@ public class ArtDetailItemReader implements ItemReader<List<KopisArtDetailRespon
 
         count++;
         log.info("art DETAIL READER ============================================== ");
-        log.info("art detail info ::"+detailList.toString());
+        log.info("art detail info ::" + detailList);
 
-        return count > 0 ? null : detailList;
+        return count > 1 ? null : detailList;
     }
 }

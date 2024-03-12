@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.database.JpaItemWriter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
