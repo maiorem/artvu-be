@@ -3,6 +3,7 @@ package com.art.api.scheduler.domain.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +13,8 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArtDeilId implements Serializable {
+@Builder
+public class ArtDetailId implements Serializable {
 
     @EqualsAndHashCode.Include
     @Id
