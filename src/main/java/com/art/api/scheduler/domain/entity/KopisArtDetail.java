@@ -11,7 +11,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Comment;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +22,7 @@ import java.util.List;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-@IdClass(ArtDeilId.class)
+@IdClass(ArtDetailId.class)
 public class KopisArtDetail extends BaseRegDate {
 
     @Id
