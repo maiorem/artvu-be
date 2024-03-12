@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
@@ -36,8 +37,8 @@ public class ArtListItemReader implements ItemReader<KopisArtListResponse> {
 
         String ROWS = "200";
 
-        LocalDate performStrDt = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        LocalDate performEndDt = performStrDt.plusMonths(1);
+        LocalDateTime performStrDt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        LocalDateTime performEndDt = performStrDt.plusMonths(1);
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyyMMdd");
 
         String strDt = performStrDt.format(dateFormat);
@@ -81,6 +82,6 @@ public class ArtListItemReader implements ItemReader<KopisArtListResponse> {
         log.info("art LIST READER ============================================== ");
         log.info("art list info ::"+result.toString());
 
-        return count > 0 ? null : result;
+        return count > 1 ? null : result;
     }
 }

@@ -1,12 +1,18 @@
 package com.art.api.scheduler.domain.entity;
 
 import com.art.api.scheduler.domain.BaseRegDate;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Comment;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -22,6 +28,13 @@ public class KopisFacDetail extends BaseRegDate {
     @Column(length = 20, name = "ART_FAC_ID")
     @Comment("공연시설ID")
     private String artFacId;
+
+    @Id
+    @Column(name = "REG_DT")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @Comment("수집일시")
+    private LocalDateTime regDt;
 
     @Column(length = 200, name = "ART_FAC_NM")
     @Comment("공연시설명")

@@ -20,13 +20,13 @@ public class ArtListItemWriter<T> extends JpaItemWriter<List<T>> {
     @Override
     @Transactional
     public void write(Chunk<? extends List<T>> items) {
-        log.info("art LIST WRITER ============================================== ");
+        log.info("art LIST WRITER ================================================");
 
-        List<T> collect = new ArrayList<>();
+        Chunk<T> collect = new Chunk<T>();
         for(List<T> list : items){
             collect.addAll(list);
         }
-        jpaItemWriter.write((Chunk<? extends T>) collect);
+        jpaItemWriter.write(collect);
     }
 
     @Override
