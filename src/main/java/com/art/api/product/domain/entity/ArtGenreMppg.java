@@ -12,7 +12,7 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor
 @AllArgsConstructor
 @Comment("상품장르연결내역")
-@Table(name = "ART_GENRE_MPPG")
+@Table(name = "TB_ART_GENRE_MPPG")
 public class ArtGenreMppg {
 
     @Id
