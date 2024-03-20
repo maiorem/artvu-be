@@ -11,6 +11,8 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
     defer-datasource-initialization: true
   
@@ -37,6 +39,6 @@ logging:
   logback:
     rolling policy:
       file-name-pattern: service.%d{yyyy-MM-dd}-%i.log
-      max-file-size: 10KB
+      max-file-size: 10MB
   pattern:
     dateformat: Asia/Seoul
