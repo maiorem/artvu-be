@@ -1,4 +1,4 @@
-package com.art.api.member.presentation;
+package com.art.api.user.presentation;
 
 import org.springframework.web.bind.annotation.RestController;
 
