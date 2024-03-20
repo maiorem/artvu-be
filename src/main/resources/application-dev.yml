@@ -1,5 +1,3 @@
-
-
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -12,9 +10,14 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     show-sql: true
     defer-datasource-initialization: true
+  batch:
+    jdbc:
+      initialize-schema: embedded
+  open-api:
+    secretKey: "9bc5a206710943769d657e163212035d"
 
   cors:
     allowed-headers: '*'
@@ -28,7 +31,7 @@ logging:
   file:
     name: service.log
   logback:
-    rollingpolicy:
+    rolling policy:
       file-name-pattern: service.%d{yyyy-MM-dd}-%i.log
       max-file-size: 10KB
   pattern:

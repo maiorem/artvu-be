@@ -31,6 +31,11 @@ dependencies {
 
     // json converter
     implementation 'com.google.code.gson:gson:2.10.1'
+    implementation group: 'org.json', name: 'json', version: '20240205'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.16.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.16.1'
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.16.1'
+
 
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
@@ -49,8 +54,15 @@ dependencies {
     // oauth2
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+    // Spring batch
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-batch', version: '3.2.3'
+
+    // webflux
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.batch:spring-batch-test'
 }
 
 tasks.named('test') {
