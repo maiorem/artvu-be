@@ -1,4 +1,4 @@
-package com.art.api.member.infrastructure.repository;
+package com.art.api.user.infrastructure.repository;
 
 public class MemberRepositoryImpl implements MemberRepositoryCustom {
 }

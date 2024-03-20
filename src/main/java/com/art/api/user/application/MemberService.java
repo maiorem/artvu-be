@@ -1,4 +1,4 @@
-package com.art.api.member.application;
+package com.art.api.user.application;
 
 import org.springframework.stereotype.Service;
 
