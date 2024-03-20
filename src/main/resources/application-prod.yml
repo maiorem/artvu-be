@@ -24,7 +24,7 @@ logging:
   file:
     name: service.log
   logback:
-    rollingpolicy:
+    rolling policy:
       file-name-pattern: service.%d{yyyy-MM-dd}-%i.log
       max-file-size: 10MB
   pattern:

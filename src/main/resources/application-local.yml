@@ -14,6 +14,15 @@ spring:
     show-sql: true
     defer-datasource-initialization: true
 
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: true
+
+  open-api:
+    secretKey: "9bc5a206710943769d657e163212035d"
+
   cors:
     allowed-headers: '*'
     max-age: 3600
@@ -27,7 +36,7 @@ logging:
   file:
     name: service.log
   logback:
-    rollingpolicy:
+    rolling policy:
       file-name-pattern: service.%d{yyyy-MM-dd}-%i.log
       max-file-size: 10KB
   pattern:
