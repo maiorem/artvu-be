@@ -22,7 +22,15 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .requestMatchers("/healthCheck", "/images/**", "/view/join", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**", "/login").permitAll()
+                        .requestMatchers(
+                                "/healthCheck",
+                                "/performs/**",
+                                "/images/**",
+                                "/view/join",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-resources/**",
+                                "/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
