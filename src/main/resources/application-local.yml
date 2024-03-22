@@ -11,6 +11,8 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
     defer-datasource-initialization: true
 
@@ -34,10 +36,10 @@ springdoc:
 
 logging:
   file:
-    name: service.log
+    path: /back-end/logfiles
   logback:
     rolling policy:
-      file-name-pattern: service.%d{yyyy-MM-dd}-%i.log
+      file-name-pattern: /log-backup/service.%d{yyyy-MM-dd}-%i.log
       max-file-size: 10KB
   pattern:
     dateformat: Asia/Seoul

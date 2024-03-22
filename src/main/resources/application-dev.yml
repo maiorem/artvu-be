@@ -38,7 +38,7 @@ logging:
     name: service.log
   logback:
     rolling policy:
-      file-name-pattern: service.%d{yyyy-MM-dd}-%i.log
+      file-name-pattern: /log-backup/service.%d{yyyy-MM-dd}-%i.log
       max-file-size: 10MB
   pattern:
     dateformat: Asia/Seoul
