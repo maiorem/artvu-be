@@ -20,6 +20,7 @@ public class ArtTime {
     @Comment("공연시간ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int artTimeId;
+
     @Column(length = 10, name = "ART_STR_DT")
     @Comment("공연시작일시")
     private String artStrDt;

@@ -18,7 +18,7 @@ import org.hibernate.annotations.Comment;
 public class ArtArea {
 
     @Id
-    @Column(length = 20, name = "지역코드")
+    @Column(length = 20, name = "AREA_CODE")
     @Comment("지역코드")
     private String areaCode;
 
