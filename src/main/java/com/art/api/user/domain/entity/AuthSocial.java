@@ -1,5 +1,6 @@
 package com.art.api.user.domain.entity;
 
+import com.art.api.core.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,8 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Comment("인증정보-소셜로그인")
 @Table(name = "TB_AUTH_SOCIAL")
-@EntityListeners(AuditingEntityListener.class)
-public class AuthSocial {
+public class AuthSocial extends BaseEntity {
 
 
     @Id
@@ -45,9 +45,4 @@ public class AuthSocial {
     @Comment("접근토큰")
     private String accessToken;
 
-
-    @Column(name = "MOD_DT")
-    @Comment("수정일시")
-    @LastModifiedDate
-    private LocalDateTime modDt;
 }

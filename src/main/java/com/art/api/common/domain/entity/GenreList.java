@@ -29,8 +29,4 @@ public class GenreList {
     @Comment("장르명")
     private String artGenreNm;
 
-    @OneToMany(mappedBy = "genreList")
-    private List<ArtGenreMppg> artGenreMppgs = new ArrayList<>();
-
-
 }
