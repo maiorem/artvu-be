@@ -19,7 +19,7 @@ import java.util.List;
 public class ArtList {
 
     @Id
-    @Column(length = 20)
+    @Column(length = 20, name="ART_ID")
     private String artId;
 
     @Column(length = 200, name = "ART_NM")

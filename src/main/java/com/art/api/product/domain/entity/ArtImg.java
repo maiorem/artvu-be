@@ -1,6 +1,7 @@
 package com.art.api.product.domain.entity;
 
 
+import com.art.api.core.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -12,7 +13,7 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 @Comment("연관이미지")
 @Table(name = "TB_ART_IMG")
-public class ArtImg {
+public class ArtImg  extends BaseEntity {
     @Id
     @Column(name = "ART_IMG_ID")
     @Comment("이미지ID")
