@@ -10,11 +10,15 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
     defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
   
   batch:
     jdbc:
