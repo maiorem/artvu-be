@@ -43,7 +43,7 @@ public class ArtTime {
 
     @JoinColumn(name = "ART_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ArtList artId;
+    private ArtList artlist;
 
 
 }
