@@ -1,5 +1,6 @@
 package com.art.api.product.domain.entity;
 
+import com.art.api.common.domain.entity.ArtArea;
 import com.art.api.common.domain.entity.GenreList;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,9 +31,6 @@ public class ArtList {
     @Comment("공연시설ID")
     private String artFacId;
 
-    @Column(length = 20, name = "AREA_CODE")
-    @Comment("지역정보-지역코드")
-    private String areaCode;
 
     @Column(name = "ORG_PRICE")
     @Comment("원본가격")
@@ -57,4 +55,12 @@ public class ArtList {
 
     @OneToMany(mappedBy = "artList")
     private List<ArtGenreMppg> artGenreMppgs = new ArrayList<>();
+
+    @OneToMany(mappedBy = "artList")
+    private List<ArtImg> artImgList = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "AREA_CODE")
+    @Comment("지역정보-지역코드")
+    private ArtArea areaCode;
 }

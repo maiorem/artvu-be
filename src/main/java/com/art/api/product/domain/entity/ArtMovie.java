@@ -28,6 +28,6 @@ public class ArtMovie  extends BaseEntity {
 
     @JoinColumn(name = "ART_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ArtList artId;
+    private ArtList artlist;
 
 }
