@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
+@Getter @Setter
 @Builder
 @Table(name = "TB_ART_LIST")
 @Comment("상품목록")
@@ -27,9 +27,10 @@ public class ArtList {
     @Comment("공연명")
     private String artNm;
 
-    @Column(length = 20, name = "ART_FAC_ID")
     @Comment("공연시설ID")
-    private String artFacId;
+    @JoinColumn(name = "ART_FAC_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ArtFacDetail artFacId;
 
 
     @Column(name = "ORG_PRICE")

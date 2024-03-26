@@ -30,5 +30,5 @@ public class ArtImg  extends BaseEntity {
 
     @JoinColumn(name = "ART_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ArtList artlist;
+    private ArtList artList;
 }
