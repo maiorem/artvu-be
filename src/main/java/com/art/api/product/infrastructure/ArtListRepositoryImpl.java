@@ -50,21 +50,11 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
     }
 
     @Override
-    public Page<ArtListDTO> findSearchResult(Pageable pageable, String genre, String local, String search) {
+    public Page<ArtList> findSearchResult(Pageable pageable, String genre, String local, String search) {
 
-        List<ArtListDTO> result = jpaQueryFactory
-                .select(Projections.fields(ArtListDTO.class,
-                        artList.artNm,
-                        artList.copyText,
-                        artArea.areaNm,
-                        genreList.artGenreNm))
-                .from(artList, genreList, artArea)
-                .leftJoin(artList.artGenreMppgs, artGenreMppg)
-                .leftJoin(artGenreMppg.genreList, genreList)
-                .leftJoin(artList.areaCode, artArea)
-                .fetchJoin()
+        List<ArtList> result = jpaQueryFactory
+                .selectFrom(artList)
                 .where( isExistKeyword(genre, local, search) )
-                .distinct()
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
