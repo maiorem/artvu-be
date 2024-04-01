@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface ArtFacRepository extends JpaRepository<ArtFacDetail, Integer> {
-    Optional<ArtFacDetail> findByFacId(int facId);
+    Optional<ArtFacDetail> findByArtFacId(int facId);
 
 
 }
