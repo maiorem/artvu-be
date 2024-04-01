@@ -15,7 +15,7 @@ public class ArtFacService {
 
     public ArtFacDetail retrieveFacility(int facId) {
 
-        Optional<ArtFacDetail> byFacId = artFacRepository.findByFacId(facId);
+        Optional<ArtFacDetail> byFacId = artFacRepository.findByArtFacId(facId);
         if(byFacId.isEmpty()) {
 
         }
