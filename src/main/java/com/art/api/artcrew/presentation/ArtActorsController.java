@@ -1,17 +1,29 @@
 package com.art.api.artcrew.presentation;
 
 import com.art.api.artcrew.application.ArtActorsService;
+import com.art.api.core.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping("/performs")
 public class ArtActorsController {
 
     private final ArtActorsService actorService;
 
+    @GetMapping("/actors/{name}")
+    public ApiResponse<?> retrieveSameNameActorList(@PathVariable String name) {
+        return ApiResponse.success("data", actorService.retrieveSameNameActorList(name));
+    }
+
+    @GetMapping("/actors/detail/{id}")
+    public ApiResponse<?> retrieveActor(@PathVariable int actorId) {
+        return ApiResponse.success("data", actorService.retrieveActor(actorId));
+    }
 
 
 }
