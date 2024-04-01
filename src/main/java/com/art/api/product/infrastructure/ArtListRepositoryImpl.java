@@ -19,8 +19,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static com.art.api.product.domain.entity.QArtList.artList;
-import static com.art.api.product.domain.entity.QArtDetail.artDetail;
-import static com.art.api.product.domain.entity.QArtFacDetail.artFacDetail;
+import static com.art.api.facility.domain.entity.QArtFacDetail.artFacDetail;
 import static com.art.api.product.domain.entity.QArtImg.artImg;
 import static com.art.api.product.domain.entity.QArtGenreMppg.artGenreMppg;
 import static com.art.api.common.domain.entity.QGenreList.genreList;

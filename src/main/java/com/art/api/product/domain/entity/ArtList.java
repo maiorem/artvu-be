@@ -1,7 +1,7 @@
 package com.art.api.product.domain.entity;
 
 import com.art.api.common.domain.entity.ArtArea;
-import com.art.api.common.domain.entity.GenreList;
+import com.art.api.facility.domain.entity.ArtFacDetail;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
