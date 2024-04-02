@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LocalRepository extends JpaRepository<ArtArea, Integer> {
+    ArtArea findByAreaCode(String areaCode);
 }
