@@ -1,4 +1,4 @@
-package com.art.api.product.domain.entity;
+package com.art.api.discover.domain.entity;
 
 import com.art.api.core.entity.BaseEntity;
 import com.art.api.product.domain.entity.ArtList;
@@ -28,6 +28,14 @@ public class ArtMovie  extends BaseEntity {
 
     @JoinColumn(name = "ART_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ArtList artId;
+    private ArtList artlist;
+
+    @Column(length = 1000, name = "DISCOVER_TITL")
+    @Comment("디스커버 제목")
+    private String discoverTitl;
+
+    @Column(length = 4000, name = "DISCOVER_CONT")
+    @Comment("디스커버 내용")
+    private String discoverCont;
 
 }
