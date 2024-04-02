@@ -26,6 +26,8 @@ public class DiscoveryDTO {
 
     private String mvUrl;
 
+    private int totSize;
+
     private List<GenreList> genreList = new ArrayList<>();
 
     public DiscoveryDTO() {
