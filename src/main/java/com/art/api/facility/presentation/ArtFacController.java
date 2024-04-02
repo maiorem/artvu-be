@@ -16,7 +16,7 @@ public class ArtFacController {
     private final ArtFacService artFacService;
 
     @GetMapping("/theater/{facId}")
-    public ApiResponse<?> retrieveFacDetail(@PathVariable int facId) {
+    public ApiResponse<?> retrieveFacDetail(@PathVariable String facId) {
         return ApiResponse.success("data", artFacService.retrieveFacility(facId));
     }
 

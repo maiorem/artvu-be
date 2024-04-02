@@ -17,7 +17,7 @@ public class ArtActorsService {
 
     //동명의 출연진 리스트
     public List<ArtActors> retrieveSameNameActorList(String name) {
-        List<ArtActors> actorList = actorRepository.findAllByName(name);
+        List<ArtActors> actorList = actorRepository.findAllByActorsNm(name);
         if (actorList == null) {
 
         }
@@ -27,7 +27,7 @@ public class ArtActorsService {
 
     //출연진 detail
     public ArtActors retrieveActor(int actorId) {
-        Optional<ArtActors> actor = actorRepository.findByArtActorId(actorId);
+        Optional<ArtActors> actor = actorRepository.findByArtActorsId(actorId);
         if (actor.isEmpty()) {
 
         }
