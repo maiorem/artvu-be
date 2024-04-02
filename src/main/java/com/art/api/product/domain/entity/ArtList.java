@@ -54,9 +54,11 @@ public class ArtList {
     @Comment("카피라이터")
     private String copyText;
 
+    @Builder.Default
     @OneToMany(mappedBy = "artList")
     private List<ArtGenreMppg> artGenreMppgs = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "artList")
     private List<ArtImg> artImgList = new ArrayList<>();
 
