@@ -22,7 +22,7 @@ public class ArtActors {
     private int artActorsId;
 
     @Column(length = 50, name = "ACTORS_NM")
-    @Comment("장르명")
+    @Comment("출연자명")
     private String actorsNm;
 
     @Column(length = 50, name = "ACTORS_IMG_URL")

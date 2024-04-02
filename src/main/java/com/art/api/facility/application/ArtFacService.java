@@ -13,7 +13,7 @@ public class ArtFacService {
 
     private final ArtFacRepository artFacRepository;
 
-    public ArtFacDetail retrieveFacility(int facId) {
+    public ArtFacDetail retrieveFacility(String facId) {
 
         Optional<ArtFacDetail> byFacId = artFacRepository.findByArtFacId(facId);
         if(byFacId.isEmpty()) {

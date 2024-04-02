@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface ArtActorsRepository extends JpaRepository<ArtActors, Integer> {
-    List<ArtActors> findAllByName(String name);
+    List<ArtActors> findAllByActorsNm(String name);
 
-    Optional<ArtActors> findByArtActorId(int actorId);
+    Optional<ArtActors> findByArtActorsId(int actorId);
 }
