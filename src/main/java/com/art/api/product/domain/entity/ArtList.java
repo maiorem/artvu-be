@@ -1,6 +1,7 @@
 package com.art.api.product.domain.entity;
 
-import com.art.api.common.domain.entity.GenreList;
+import com.art.api.common.domain.entity.ArtArea;
+import com.art.api.facility.domain.entity.ArtFacDetail;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
+@Getter @Setter
 @Builder
 @Table(name = "TB_ART_LIST")
 @Comment("상품목록")
@@ -26,13 +27,11 @@ public class ArtList {
     @Comment("공연명")
     private String artNm;
 
-    @Column(length = 20, name = "ART_FAC_ID")
     @Comment("공연시설ID")
-    private String artFacId;
+    @JoinColumn(name = "ART_FAC_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ArtFacDetail artFacId;
 
-    @Column(length = 20, name = "AREA_CODE")
-    @Comment("지역정보-지역코드")
-    private String areaCode;
 
     @Column(name = "ORG_PRICE")
     @Comment("원본가격")
@@ -55,6 +54,16 @@ public class ArtList {
     @Comment("카피라이터")
     private String copyText;
 
+    @Builder.Default
     @OneToMany(mappedBy = "artList")
     private List<ArtGenreMppg> artGenreMppgs = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "artList")
+    private List<ArtImg> artImgList = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "AREA_CODE")
+    @Comment("지역정보-지역코드")
+    private ArtArea areaCode;
 }
