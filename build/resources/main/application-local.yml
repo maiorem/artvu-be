@@ -9,16 +9,42 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        default_batch_fetch_size: 100
     hibernate:
       ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
     defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: true
+
+  open-api:
+    secretKey: "9bc5a206710943769d657e163212035d"
 
   cors:
     allowed-headers: '*'
     max-age: 3600
-    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+    allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
     allowed-origins: '*'
 
 springdoc:
   show-login-endpoint: true
+
+logging:
+  file:
+    path: /back-end/logfiles
+  logback:
+    rolling policy:
+      file-name-pattern: /log-backup/service.%d{yyyy-MM-dd}-%i.log
+      max-file-size: 10KB
+  pattern:
+    dateformat: Asia/Seoul

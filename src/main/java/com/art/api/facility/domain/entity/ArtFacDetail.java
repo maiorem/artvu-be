@@ -1,4 +1,4 @@
-package com.art.api.product.domain.entity;
+package com.art.api.facility.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
