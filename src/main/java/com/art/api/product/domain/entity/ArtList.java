@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @Builder
-@Table(name = "TB_ART_LIST")
+@Table(name = "TB_ART")
 @Comment("상품목록")
 @NoArgsConstructor
 @AllArgsConstructor
