@@ -4,7 +4,9 @@ import com.art.api.common.domain.entity.ArtArea;
 import com.art.api.facility.domain.entity.ArtFacDetail;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,13 +34,14 @@ public class ArtList {
     @ManyToOne(fetch = FetchType.LAZY)
     private ArtFacDetail artFacId;
 
-
     @Column(name = "ORG_PRICE")
     @Comment("원본가격")
+    @ColumnDefault("0")
     private int orgPrice;
 
     @Column(name = "MIN_PRICE")
     @Comment("최저가격")
+    @ColumnDefault("0")
     private int minPrice;
 
     @Column(name = "MIN_PRICE_REG_DT")
