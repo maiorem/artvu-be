@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ArtImgRepository extends JpaRepository<ArtImg, Integer> {
-    List<ArtImg> findAllByArtList(ArtList artList);
+    Optional<List<ArtImg>> findAllByArtList(ArtList artList);
 }

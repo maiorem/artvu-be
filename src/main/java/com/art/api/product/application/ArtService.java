@@ -12,6 +12,7 @@ import com.art.api.product.infrastructure.ArtGenreMppgRepository;
 import com.art.api.product.infrastructure.ArtImgRepository;
 import com.art.api.product.infrastructure.ArtListRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ArtService {
@@ -42,17 +45,20 @@ public class ArtService {
 
             ArtListDTO dto = ArtListDTO.convertEntityToDto(item);
             ArtArea area = areaRepository.findByAreaCode(item.getAreaCode().getAreaCode());
-            List<ArtImg> artImgList = artImgListRepository.findAllByArtList(item);
-            String posterUrl = artImgList.stream().filter(n -> n.getClsCode().equals("P")).findFirst().get().getImgUrl();
-
-            List<ArtGenreMppg> mappingList = mappRepository.findAllByArtList(item.getArtId());
+            Optional<List<ArtImg>> artImgList = artImgListRepository.findAllByArtList(item);
+            String posterUrl = "";
+            if(artImgList.isPresent()) {
+                posterUrl = artImgList.get().stream().filter(n -> n.getClsCode().equals("P")).findAny().orElse(ArtImg.builder().imgUrl("").build()).getImgUrl();
+            }
+            Optional<List<ArtGenreMppg>> mappingList = mappRepository.findAllByArtList(item.getArtId());
 
             dto.setArea(area.getAreaNm());
             dto.setPosterUrl(posterUrl);
-            mappingList.forEach( genre -> {
-                dto.getGenreList().add(genreRepository.findByArtGenreId(genre.getGenreList().getArtGenreId()));
+            mappingList.ifPresent(artGenreMppgs -> {
+                for (ArtGenreMppg genre : artGenreMppgs) {
+                    dto.getGenreList().add(genreRepository.findByArtGenreId(genre.getGenreList().getArtGenreId()));
+                }
             });
-
             list.add(dto);
         });
 
