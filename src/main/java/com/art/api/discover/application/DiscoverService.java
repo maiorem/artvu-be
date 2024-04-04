@@ -38,19 +38,11 @@ public class DiscoverService {
     public Page<DiscoveryDTO> convertDiscoveryDto(Page<ArtMovie> artMovies){
         List<DiscoveryDTO> list = new ArrayList<>();
         artMovies.stream().forEach(movie -> {
-            Optional<ArtDetail> artDetail = artDetailRepository.findByArtId(movie.getArtlist().getArtId());
-            if (artDetail.isEmpty()) {
+            DiscoveryDTO dto = DiscoveryDTO.convertEntityToDto(movie.getArtlist(), movie);
 
-            }
-            DiscoveryDTO dto = DiscoveryDTO.convertEntityToDto(movie.getArtlist(), artDetail.get(), movie);
-
-            dto.setTotSize(artMovies.getSize());
-            List<ArtGenreMppg> mappingList = mappRepository.findAllByArtList(movie.getArtlist().getArtId());
-
-            mappingList.forEach( genre -> {
-                dto.getGenreList().add(genreRepository.findByArtGenreId(genre.getGenreList().getArtGenreId()));
-            });
-
+            dto.setTotSize(artMovies.getTotalPages());
+            Optional<List<ArtGenreMppg>> mappingList = mappRepository.findAllByArtList(movie.getArtlist());
+            mappingList.ifPresent(artGenreMppgs -> artGenreMppgs.forEach(genre -> dto.getGenreList().add(genreRepository.findByArtGenreId(genre.getGenreList().getArtGenreId()))));
             list.add(dto);
 
         });
