@@ -37,7 +37,6 @@ public class ArtList {
     @Comment("원본가격")
     private int orgPrice;
 
-
     @Column(name = "MIN_PRICE")
     @Comment("최저가격")
     private int minPrice;

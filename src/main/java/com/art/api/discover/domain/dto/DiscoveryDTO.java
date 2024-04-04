@@ -42,8 +42,8 @@ public class DiscoveryDTO {
         this.mvUrl = mvUrl;
     }
 
-    public static DiscoveryDTO convertEntityToDto(ArtList artList, ArtDetail art, ArtMovie movie) {
-        return new DiscoveryDTO(artList.getArtNm(), art.getArtShowAge(), movie.getDiscoverTitl(), movie.getDiscoverCont(), movie.getMvUrl());
+    public static DiscoveryDTO convertEntityToDto(ArtList artList, ArtMovie movie) {
+        return new DiscoveryDTO(artList.getArtNm(), "15", movie.getDiscoverTitl(), movie.getDiscoverCont(), movie.getMvUrl());
     }
 
 
