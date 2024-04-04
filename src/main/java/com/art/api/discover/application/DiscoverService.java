@@ -41,7 +41,7 @@ public class DiscoverService {
             DiscoveryDTO dto = DiscoveryDTO.convertEntityToDto(movie.getArtlist(), movie);
 
             dto.setTotSize(artMovies.getTotalPages());
-            Optional<List<ArtGenreMppg>> mappingList = mappRepository.findAllByArtList(movie.getArtlist());
+            Optional<List<ArtGenreMppg>> mappingList = mappRepository.findAllByArtList(movie.getArtlist().getArtId());
             mappingList.ifPresent(artGenreMppgs -> artGenreMppgs.forEach(genre -> dto.getGenreList().add(genreRepository.findByArtGenreId(genre.getGenreList().getArtGenreId()))));
             list.add(dto);
 
