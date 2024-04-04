@@ -10,6 +10,6 @@ import java.util.Optional;
 
 public interface ArtGenreMppgRepository extends JpaRepository<ArtGenreMppg, ArtGenreMppgId> {
 
-    Optional<List<ArtGenreMppg>> findAllByArtList(ArtList artList);
+    Optional<List<ArtGenreMppg>> findAllByArtList(String artId);
 
 }

@@ -50,7 +50,7 @@ public class ArtService {
             if(artImgList.isPresent()) {
                 posterUrl = artImgList.get().stream().filter(n -> n.getClsCode().equals("P")).findAny().orElse(ArtImg.builder().imgUrl("").build()).getImgUrl();
             }
-            Optional<List<ArtGenreMppg>> mappingList = mappRepository.findAllByArtList(item);
+            Optional<List<ArtGenreMppg>> mappingList = mappRepository.findAllByArtList(item.getArtId());
 
             dto.setArea(area.getAreaNm());
             dto.setPosterUrl(posterUrl);
