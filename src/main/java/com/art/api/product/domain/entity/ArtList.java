@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -64,8 +63,13 @@ public class ArtList {
     @OneToMany(mappedBy = "artList")
     private List<ArtImg> artImgList = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "artList")
+    private List<ThemeHist> themeList = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "AREA_CODE")
     @Comment("지역정보-지역코드")
     private ArtArea areaCode;
+
 }

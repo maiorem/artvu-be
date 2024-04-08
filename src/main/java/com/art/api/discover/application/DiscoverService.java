@@ -4,17 +4,14 @@ import com.art.api.common.infrastructure.GenreRepository;
 import com.art.api.discover.domain.dto.DiscoveryDTO;
 import com.art.api.discover.domain.entity.ArtMovie;
 import com.art.api.discover.infrastructure.DiscoverRepository;
-import com.art.api.product.domain.entity.ArtDetail;
 import com.art.api.product.domain.entity.ArtGenreMppg;
 import com.art.api.product.infrastructure.ArtDetailRepository;
 import com.art.api.product.infrastructure.ArtGenreMppgRepository;
-import com.art.api.product.infrastructure.ArtListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +22,6 @@ import java.util.Optional;
 public class DiscoverService {
 
     private final DiscoverRepository discoverRepository;
-    private final ArtListRepository artListRepository;
     private final ArtDetailRepository artDetailRepository;
     private final ArtGenreMppgRepository mappRepository;
     private final GenreRepository genreRepository;

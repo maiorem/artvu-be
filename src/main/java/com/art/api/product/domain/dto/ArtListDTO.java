@@ -1,20 +1,19 @@
 package com.art.api.product.domain.dto;
 
-import com.art.api.common.domain.entity.ArtArea;
 import com.art.api.common.domain.entity.GenreList;
-import com.art.api.product.domain.entity.ArtGenreMppg;
-import com.art.api.product.domain.entity.ArtImg;
 import com.art.api.product.domain.entity.ArtList;
 import com.querydsl.core.annotations.QueryProjection;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ArtListDTO {
 
     private String artId;
