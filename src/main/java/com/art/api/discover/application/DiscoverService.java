@@ -28,11 +28,11 @@ public class DiscoverService {
     private final GenreRepository genreRepository;
 
     public Page<DiscoveryDTO> retrieveDiscovery(Pageable pageable) {
-        Page<DiscoveryDTO> artMovies = convertDiscoveryDto(discoverRepository.retrieveDiscover(pageable), pageable);
+        Page<DiscoveryDTO> artMovies = convertDiscoveryDto(discoverRepository.retrieveDiscover(pageable));
         return artMovies;
     }
 
-    public Page<DiscoveryDTO> convertDiscoveryDto(Page<ArtMovie> artMovies, Pageable pageable){
+    public Page<DiscoveryDTO> convertDiscoveryDto(Page<ArtMovie> artMovies){
         List<DiscoveryDTO> list = new ArrayList<>();
         artMovies.stream().forEach(movie -> {
             DiscoveryDTO dto = DiscoveryDTO.convertEntityToDto(movie.getArtlist(), movie);
@@ -45,8 +45,8 @@ public class DiscoverService {
         });
         // 순서 랜덤
         Collections.shuffle(list);
-        int fromIndex = (int) pageable.getOffset();
-        int toIndex = Math.min(fromIndex + pageable.getPageSize(), list.size());
+        int fromIndex = (int) artMovies.getPageable().getOffset();
+        int toIndex = Math.min(fromIndex + artMovies.getPageable().getPageSize(), list.size());
         List<DiscoveryDTO> subList = list.subList(fromIndex, toIndex);
 
         Page<DiscoveryDTO> result = new PageImpl<>(subList, artMovies.getPageable(), artMovies.getSize());
