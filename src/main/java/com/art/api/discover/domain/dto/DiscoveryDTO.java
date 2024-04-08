@@ -3,10 +3,11 @@ package com.art.api.discover.domain.dto;
 
 import com.art.api.common.domain.entity.GenreList;
 import com.art.api.discover.domain.entity.ArtMovie;
-import com.art.api.product.domain.entity.ArtDetail;
 import com.art.api.product.domain.entity.ArtList;
 import com.querydsl.core.annotations.QueryProjection;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -14,11 +15,16 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DiscoveryDTO {
 
     private String artNm;
 
     private String artShowAge;
+
+    private String posterImgUrl;
+
+    private String clsCode;
 
     private String discoverTitl;
 
@@ -30,8 +36,6 @@ public class DiscoveryDTO {
 
     private List<GenreList> genreList = new ArrayList<>();
 
-    public DiscoveryDTO() {
-    }
 
     @QueryProjection
     public DiscoveryDTO(String artNm, String artShowAge, String discoverTitl, String discoverCont, String mvUrl) {

@@ -42,7 +42,7 @@ public class ArtTime {
     private LocalDate regDt;
 
     @JoinColumn(name = "ART_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private ArtList artlist;
 
 
