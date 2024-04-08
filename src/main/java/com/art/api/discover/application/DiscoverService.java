@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,11 +28,11 @@ public class DiscoverService {
     private final GenreRepository genreRepository;
 
     public Page<DiscoveryDTO> retrieveDiscovery(Pageable pageable) {
-        Page<DiscoveryDTO> artMovies = convertDiscoveryDto(discoverRepository.retrieveDiscover(pageable));
+        Page<DiscoveryDTO> artMovies = convertDiscoveryDto(discoverRepository.retrieveDiscover(pageable), pageable);
         return artMovies;
     }
 
-    public Page<DiscoveryDTO> convertDiscoveryDto(Page<ArtMovie> artMovies){
+    public Page<DiscoveryDTO> convertDiscoveryDto(Page<ArtMovie> artMovies, Pageable pageable){
         List<DiscoveryDTO> list = new ArrayList<>();
         artMovies.stream().forEach(movie -> {
             DiscoveryDTO dto = DiscoveryDTO.convertEntityToDto(movie.getArtlist(), movie);
@@ -42,7 +43,13 @@ public class DiscoverService {
             list.add(dto);
 
         });
-        Page<DiscoveryDTO> result = new PageImpl<>(list, artMovies.getPageable(), artMovies.getSize());
+        // 순서 랜덤
+        Collections.shuffle(list);
+        int fromIndex = (int) pageable.getOffset();
+        int toIndex = Math.min(fromIndex + pageable.getPageSize(), list.size());
+        List<DiscoveryDTO> subList = list.subList(fromIndex, toIndex);
+
+        Page<DiscoveryDTO> result = new PageImpl<>(subList, artMovies.getPageable(), artMovies.getSize());
         return result;
     }
 
