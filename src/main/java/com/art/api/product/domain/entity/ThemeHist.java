@@ -20,7 +20,7 @@ public class ThemeHist extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "THEME_HIST_ID")
-    private int ThemeHistId;
+    private int themeHistId;
 
     @ManyToOne
     @JoinColumn(name = "THEME_ID")
