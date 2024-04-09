@@ -7,10 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -44,5 +40,9 @@ public class AuthSocial extends BaseEntity {
     @Column(length = 256, name = "ACCESS_TOKEN")
     @Comment("접근토큰")
     private String accessToken;
+
+    @Column(length = 256, name = "REFRESH_TOKEN")
+    @Comment("리스레쉬_토큰")
+    private String refreshToken;
 
 }

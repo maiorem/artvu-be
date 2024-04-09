@@ -109,4 +109,7 @@ public class ArtFacDetail {
     @Comment("주차시설여부")
     private String parkingYn;
 
+    @Column(length = 2000, name = "SEAT_IMG_URL")
+    @Comment("좌석이미지")
+    private String seatImgUrl;
 }
