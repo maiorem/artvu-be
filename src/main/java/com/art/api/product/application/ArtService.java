@@ -47,7 +47,7 @@ public class ArtService {
             Optional<List<ArtImg>> artImgList = imgListRepository.findAllByArtList(item);
             String posterUrl = "";
             if(artImgList.isPresent()) {
-                posterUrl = artImgList.get().stream().filter(n -> n.getClsCode().equals(ClsCode.POSTER)).findAny().orElse(ArtImg.builder().imgUrl("").build()).getImgUrl();
+                posterUrl = artImgList.get().stream().filter(n -> n.getClsCode().equals(ClsCode.KOPIS)).findAny().orElse(ArtImg.builder().imgUrl("").build()).getImgUrl();
             }
             Optional<List<ArtGenreMppg>> mappingList = mappRepository.findAllByArtList(item.getArtId());
 
