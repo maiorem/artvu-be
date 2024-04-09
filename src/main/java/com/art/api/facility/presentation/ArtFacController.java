@@ -20,9 +20,9 @@ public class ArtFacController {
         return ApiResponse.success("data", artFacService.retrieveFacility(facId));
     }
 
-    @GetMapping("/seat/{artId}")
-    public ApiResponse<?> retrieveSeat(@PathVariable String artId) {
-        return ApiResponse.success("data", artFacService.regreiveTip(artId));
+    @GetMapping("/seat/{facId}")
+    public ApiResponse<?> retrieveSeat(@PathVariable String facId) {
+        return ApiResponse.success("data", artFacService.regreiveTip(facId));
     }
 
 }
