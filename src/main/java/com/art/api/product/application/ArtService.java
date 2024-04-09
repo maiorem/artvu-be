@@ -7,6 +7,7 @@ import com.art.api.common.infrastructure.LocalRepository;
 import com.art.api.facility.infrastructure.ArtFacRepository;
 import com.art.api.product.domain.dto.ArtDetailDTO;
 import com.art.api.product.domain.dto.ArtListDTO;
+import com.art.api.product.domain.dto.ThemeDTO;
 import com.art.api.product.domain.entity.*;
 import com.art.api.product.infrastructure.*;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,10 @@ public class ArtService {
     private final ArtImgRepository imgListRepository;
     private final ArtTimeRepository timeRepository;
     private final ArtFacRepository facilityRepository;
+    private final ThemeHistRepository themeHistRepository;
+    private final ThemeRepository themeRepository;
+
+
     public Page<ArtListDTO> retrieveArtList(Pageable pageable, String genre, String local, String search) {
         Page<ArtListDTO> artList = convertArtList(artListRepository.findSearchResult(pageable, genre, local, search));
         return artList;
@@ -93,5 +98,30 @@ public class ArtService {
     }
 
 
+    public List<ThemeDTO> retrieveThemeList(String themeNm) {
+        List<ThemeDTO> list = new ArrayList<>();
+        Optional<Theme> theme = themeRepository.findByThemeNm(themeNm);
+        if(theme.isEmpty()) {
 
+        }
+        Optional<List<ThemeHist>> themeHistList = themeHistRepository.findByTheme(theme.get());
+        themeHistList.ifPresent(themeHists -> {
+            for (ThemeHist themeHist : themeHists) {
+                Optional<ArtList> art = artListRepository.findByArtId(themeHist.getArtList().getArtId());
+                if (art.isEmpty()) {
+
+                }
+                ThemeDTO dto = ThemeDTO.convertEntityToDto(art.get(), theme.get());
+                Optional<List<ArtImg>> artImgList = imgListRepository.findAllByArtList(art.get());
+                String posterUrl = "";
+                if(artImgList.isPresent()) {
+                    posterUrl = artImgList.get().stream().filter(n -> n.getClsCode().equals(ClsCode.KOPIS)).findAny().orElse(ArtImg.builder().imgUrl("").build()).getImgUrl();
+                }
+                dto.setPosterImgUrl(posterUrl);
+                list.add(dto);
+            }
+        });
+
+        return list;
+    }
 }

@@ -35,4 +35,10 @@ public class ArtController {
         return ApiResponse.success("data", artService.retrieveArtDetail(artId));
     }
 
+    @GetMapping("/theme/{themeNm}")
+    @Operation(description = "공연 상세")
+    public ApiResponse<?> retrieveThemeList(@PathVariable String themeNm){
+        return ApiResponse.success("data", artService.retrieveThemeList(themeNm));
+    }
+
 }
