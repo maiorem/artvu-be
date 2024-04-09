@@ -20,9 +20,14 @@ public class ArtActorsController {
         return ApiResponse.success("data", actorService.retrieveSameNameActorList(name));
     }
 
-    @GetMapping("/actors/detail/{id}")
+    @GetMapping("/actors/detail/{actorId}")
     public ApiResponse<?> retrieveActor(@PathVariable int actorId) {
         return ApiResponse.success("data", actorService.retrieveActor(actorId));
+    }
+
+    @GetMapping("/people/{artId}")
+    public ApiResponse<?> retrievePeople(@PathVariable String artId) {
+        return ApiResponse.success("data", actorService.retrievePeople(artId));
     }
 
 

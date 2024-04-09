@@ -1,8 +1,13 @@
 package com.art.api.artcrew.application;
 
 
+import com.art.api.artcrew.domain.dto.PeopleDTO;
 import com.art.api.artcrew.domain.entity.ArtActors;
 import com.art.api.artcrew.infrastructure.ArtActorsRepository;
+import com.art.api.product.domain.entity.ArtDetail;
+import com.art.api.product.domain.entity.ArtList;
+import com.art.api.product.infrastructure.ArtDetailRepository;
+import com.art.api.product.infrastructure.ArtListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +19,16 @@ import java.util.Optional;
 public class ArtActorsService {
 
     private final ArtActorsRepository actorRepository;
+    private final ArtDetailRepository detailRepository;
+    private final ArtListRepository listRepository;
 
     //동명의 출연진 리스트
     public List<ArtActors> retrieveSameNameActorList(String name) {
-        List<ArtActors> actorList = actorRepository.findAllByActorsNm(name);
-        if (actorList == null) {
+        Optional<List<ArtActors>> actorList = actorRepository.findAllByActorsNm(name);
+        if (actorList.isEmpty()) {
 
         }
-        return actorList;
+        return actorList.get();
     }
 
 
@@ -33,6 +40,27 @@ public class ArtActorsService {
         }
         return actor.get();
 
+    }
+
+    //제작/기획/출연진
+    public PeopleDTO retrievePeople(String artId) {
+        Optional<ArtDetail> byArtId = detailRepository.findByArtId(artId);
+        if (byArtId.isEmpty()) {
+
+        }
+        PeopleDTO dto = PeopleDTO.convertEntityToDto(byArtId.get());
+
+        Optional<ArtList> art = listRepository.findByArtId(artId);
+        if(art.isEmpty()) {
+
+        }
+        Optional<List<ArtActors>> actorList = actorRepository.findAllByArtList(art.get());
+        if (actorList.isPresent()) {
+            for (ArtActors artActors : actorList.get()) {
+                dto.getActors().add(artActors);
+            }
+        }
+        return dto;
     }
 
 }
