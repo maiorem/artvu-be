@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +27,18 @@ public class ArtController {
 
 
         return ApiResponse.success("data", artService.retrieveArtList(pagable, genre, local, search));
+    }
+
+    @GetMapping("/{artId}")
+    @Operation(description = "공연 상세")
+    public ApiResponse<?> artDetail(@PathVariable String artId){
+        return ApiResponse.success("data", artService.retrieveArtDetail(artId));
+    }
+
+    @GetMapping("/theme/{themeNm}")
+    @Operation(description = "공연 상세")
+    public ApiResponse<?> retrieveThemeList(@PathVariable String themeNm){
+        return ApiResponse.success("data", artService.retrieveThemeList(themeNm));
     }
 
 }
