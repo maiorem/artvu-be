@@ -4,6 +4,7 @@ import com.art.api.common.domain.entity.ArtArea;
 import com.art.api.facility.domain.entity.ArtFacDetail;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @Builder
-@Table(name = "TB_ART_LIST")
+@Table(name = "TB_ART")
 @Comment("상품목록")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,14 +33,14 @@ public class ArtList {
     @ManyToOne(fetch = FetchType.LAZY)
     private ArtFacDetail artFacId;
 
-
     @Column(name = "ORG_PRICE")
     @Comment("원본가격")
+    @ColumnDefault("0")
     private int orgPrice;
-
 
     @Column(name = "MIN_PRICE")
     @Comment("최저가격")
+    @ColumnDefault("0")
     private int minPrice;
 
     @Column(name = "MIN_PRICE_REG_DT")
@@ -62,8 +63,13 @@ public class ArtList {
     @OneToMany(mappedBy = "artList")
     private List<ArtImg> artImgList = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "artList")
+    private List<ThemeHist> themeList = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "AREA_CODE")
     @Comment("지역정보-지역코드")
     private ArtArea areaCode;
+
 }

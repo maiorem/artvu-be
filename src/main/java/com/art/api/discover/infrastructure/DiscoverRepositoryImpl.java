@@ -26,8 +26,6 @@ public class DiscoverRepositoryImpl implements DiscoverRepositoryCustom{
     public Page<ArtMovie> retrieveDiscover(Pageable pageable){
         List<ArtMovie> result = jpaQueryFactory
                 .selectFrom(artMovie)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .fetch();
         Long count = discoverCount();
         return new PageImpl<>(result, pageable, count);

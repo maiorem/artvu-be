@@ -31,5 +31,5 @@ public class ArtActors {
 
     @JoinColumn(name = "ART_ID")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ArtList artId;
+    private ArtList artList;
 }
