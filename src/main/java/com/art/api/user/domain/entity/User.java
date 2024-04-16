@@ -28,6 +28,6 @@ public class User {
 
     @Column(name = "LOGIN_TYPE")
     @Comment("로그인타입(1:IDPW, 2:SOCIAL)")
-    private int loginType;
+    private LoginType loginType;
 
 }
