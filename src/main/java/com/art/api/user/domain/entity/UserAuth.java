@@ -34,7 +34,6 @@ public class UserAuth {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-
     @Column(length = 1, name = "PRIVACY_AGRE_YN")
     @Comment("개인정보동의여부")
     private String privacyAgreYn;

@@ -24,7 +24,7 @@ public class MemberProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "FAMILY_NO")
+    @Column(name = "PROFILE_NO")
     @Comment("프로필번호")
     private int profileNo;
 

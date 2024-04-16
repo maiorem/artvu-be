@@ -35,6 +35,32 @@ spring:
     max-age: 3600
     allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
     allowed-origins: '*'
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: 'ac7e35703269d1cfeceebac6668effc1'
+            client-secret: 'LDTWH1YBdFgOLrnKVrkBdobXxPMT0biH'
+            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            scope: account_email, profile_image, profile_nickname, gender
+            client-name: kakao
+        provider:
+          kakao:
+            authorizationUri: https://kauth.kakao.com/oauth/authorize
+            tokenUri: https://kauth.kakao.com/oauth/token
+            userInfoUri: https://kapi.kakao.com/v2/user/me
+            userNameAttribute: id
+  app:
+    auth:
+      tokenSecret: '1438548D548538CA131349ADFD18238BDB'
+      tokenExpiry: 1800000 # 30분
+      refreshTokenExpiry: 604800000 # 7일
+    oauth2:
+      authorized-redirect-uris: https://dev.artvu.co.kr/oauth/redirect
+
 springdoc:
   show-login-endpoint: true
 
