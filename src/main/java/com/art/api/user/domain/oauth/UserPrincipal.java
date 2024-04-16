@@ -3,7 +3,6 @@ package com.art.api.user.domain.oauth;
 import com.art.api.user.domain.entity.AuthSocial;
 import com.art.api.user.domain.entity.RoleType;
 import com.art.api.user.domain.entity.SocialJoinType;
-import com.art.api.user.domain.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +24,7 @@ import java.util.Map;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
+
     private final String userId;
     private final String password;
     private final SocialJoinType socialJoinType;
@@ -87,18 +87,19 @@ public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
         return userId;
     }
 
-//    public static UserPrincipal create(AuthSocial auth, String userId) {
-//        return new UserPrincipal(
-//                userId,
-//                auth.getSocialJoinType(),
-//                RoleType.USER,
-//                Collections.singletonList(new SimpleGrantedAuthority(RoleType.USER.getCode()))
-//        );
-//    }
+    public static UserPrincipal create(AuthSocial auth, String userId) {
+        return new UserPrincipal(
+                userId,
+                auth.getPassword(),
+                auth.getSocialJoinType(),
+                RoleType.USER,
+                Collections.singletonList(new SimpleGrantedAuthority(RoleType.USER.getCode()))
+        );
+    }
 
-//    public static UserPrincipal create(AuthSocial auth, Map<String, Object> attributes, String userId) {
-//        UserPrincipal clientUserPrincipal = create(auth, userId);
-//        clientUserPrincipal.setAttributes(attributes);
-//        return clientUserPrincipal;
-//    }
+    public static UserPrincipal create(AuthSocial auth, Map<String, Object> attributes, String userId) {
+        UserPrincipal clientUserPrincipal = create(auth, userId);
+        clientUserPrincipal.setAttributes(attributes);
+        return clientUserPrincipal;
+    }
 }
