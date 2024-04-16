@@ -2,13 +2,10 @@ package com.art.api.user.domain.entity;
 
 import com.art.api.core.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 
-@Getter
+@Getter @Setter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -16,7 +13,6 @@ import org.hibernate.annotations.Comment;
 @Comment("인증정보-소셜로그인")
 @Table(name = "TB_AUTH_SOCIAL")
 public class AuthSocial extends BaseEntity {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +23,10 @@ public class AuthSocial extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "USER_ID")
     private User user;
+
+    private String password;
+
+    private String profileImgUrl;
 
     @Column(length = 1, name = "SOCIAL_JOIN_TYPE")
     @Comment("소셜가입구분(1:apple, 2:goolge, 3: kakao, 4:naver)")
