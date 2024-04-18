@@ -16,4 +16,8 @@ public enum SocialJoinType {
         return Arrays.stream(SocialJoinType.values())
                 .filter(r -> r.getCode()==code).findAny().get();
     }
+
+    public int code() {
+        return code;
+    }
 }
