@@ -9,5 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface AuthSocialRepository extends JpaRepository<AuthSocial, Integer> {
-    Optional<AuthSocial> findByUser(User user);
+    AuthSocial findByUser(User user);
+
+    AuthSocial findByUserAndRefreshToken(User user, String refreshToken);
 }

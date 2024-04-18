@@ -8,4 +8,8 @@ public enum LoginType {
     LoginType(int code) {
         this.code = code;
     }
+
+    public int code() {
+        return code;
+    }
 }

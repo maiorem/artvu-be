@@ -50,10 +50,10 @@ public class UserAuth {
     @Comment("생년월일(예시:20240314)")
     private String birthdayDt;
 
-
     @Column(length = 1, name = "SEX")
     @Comment("성별(M,F)")
-    private String sex;
+    @Enumerated(EnumType.STRING)
+    private Gender sex;
 
     @Column(length = 100, name = "JOB_NM")
     @Comment("직업")

@@ -40,8 +40,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     public OAuth2User process(OAuth2UserRequest userRequest, OAuth2User user) {
-        SocialJoinType type = SocialJoinType
-                .valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
+        SocialJoinType type = SocialJoinType.valueOf(userRequest.getClientRegistration().getRegistrationId().toUpperCase());
 
         OAuth2UserInfo clientUserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(type, user.getAttributes());
         Optional<User> clientUserOptional = memberRepository.findByUserId(clientUserInfo.getId());
@@ -51,12 +50,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String userId;
 
         if (clientUserOptional.isPresent()) {
-            Optional<AuthSocial> authOptinal = authSocialRepository.findByUser(clientUserOptional.get());
-            if (authOptinal.isEmpty()) {
+            auth = authSocialRepository.findByUser(clientUserOptional.get());
+            if (auth == null) {
 
             }
             clientUser = clientUserOptional.get();
-            auth = authOptinal.get();
             userId = clientUser.getUserId();
             SocialJoinType clientType = auth.getSocialJoinType();
 
@@ -69,7 +67,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             updateUser(auth, clientUserInfo);
         } else {
             clientUser = createUser(clientUserInfo, type);
-            auth = authSocialRepository.findByUser(clientUser).get();
+            auth = authSocialRepository.findByUser(clientUser);
             userId = clientUser.getUserId();
             log.info("savedClientUser = {}", clientUser);
         }
@@ -88,9 +86,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .socialJoinType(type)
                 .profileImgUrl(clientUserInfo.getImageUrl())
                 .build();
+
         UserAuth userAuth = UserAuth.builder()
                         .user(clientUser)
-                        .sex(clientUserInfo.getGender())
+                        .sex(Gender.valueOf(clientUserInfo.getGender().toUpperCase()))
                         .email(clientUserInfo.getEmail())
                         .build();
 

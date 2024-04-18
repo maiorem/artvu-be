@@ -30,11 +30,7 @@ spring:
   open-api:
     secretKey: "9bc5a206710943769d657e163212035d"
 
-  cors:
-    allowed-headers: '*'
-    max-age: 3600
-    allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
-    allowed-origins: '*'
+
   security:
     oauth2:
       client:
@@ -53,14 +49,19 @@ spring:
             tokenUri: https://kauth.kakao.com/oauth/token
             userInfoUri: https://kapi.kakao.com/v2/user/me
             userNameAttribute: id
-  app:
-    auth:
-      tokenSecret: '1438548D548538CA131349ADFD18238BDB'
-      tokenExpiry: 1800000 # 30분
-      refreshTokenExpiry: 604800000 # 7일
-    oauth2:
-      authorized-redirect-uris: http://localhost:5173/oauth/redirect
 
+app:
+  auth:
+    tokenSecret: '1438548D548538CA131349ADFD18238BDB'
+    tokenExpiry: 1800000 # 30분
+    refreshTokenExpiry: 604800000 # 7일
+  oauth2:
+    authorized-redirect-uris: http://localhost:3000/oauth/redirect
+cors:
+  allowed-headers: '*'
+  max-age: 3600
+  allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+  allowed-origins: '*'
 springdoc:
   show-login-endpoint: true
 

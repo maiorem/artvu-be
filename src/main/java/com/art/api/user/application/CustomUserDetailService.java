@@ -26,11 +26,11 @@ public class CustomUserDetailService implements UserDetailsService {
         if(clientUser.isEmpty()) {
 
         }
-        Optional<AuthSocial> auth = authSocialRepository.findByUser(clientUser.get());
-        if(auth.isEmpty()) {
+        AuthSocial auth = authSocialRepository.findByUser(clientUser.get());
+        if(auth == null) {
 
         }
 
-        return UserPrincipal.create(auth.get(), clientUser.get().getUserId());
+        return UserPrincipal.create(auth, clientUser.get().getUserId());
     }
 }

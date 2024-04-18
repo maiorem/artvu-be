@@ -24,12 +24,17 @@ public class AuthSocial extends BaseEntity {
     @JoinColumn(name = "USER_ID")
     private User user;
 
+    @Column(length = 64, name = "PASSWORD")
+    @Comment("비밀번호")
     private String password;
 
+    @Column(length = 200, name = "PROFILE_IMG_URL")
+    @Comment("프로필 이미지")
     private String profileImgUrl;
 
     @Column(length = 1, name = "SOCIAL_JOIN_TYPE")
     @Comment("소셜가입구분(1:apple, 2:goolge, 3: kakao, 4:naver)")
+    @Enumerated(EnumType.STRING)
     private SocialJoinType socialJoinType;
 
     @Column(length = 64, name = "EXTERNAL_ID")

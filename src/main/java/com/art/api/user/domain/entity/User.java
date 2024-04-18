@@ -27,7 +27,8 @@ public class User {
     private String userName;
 
     @Column(name = "LOGIN_TYPE")
-    @Comment("로그인타입(1:IDPW, 2:SOCIAL)")
+    @Comment("로그인타입(0:IDPW, 1:SOCIAL)")
+    @Enumerated(EnumType.STRING)
     private LoginType loginType;
 
 }
