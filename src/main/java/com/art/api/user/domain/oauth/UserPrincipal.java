@@ -90,7 +90,7 @@ public class UserPrincipal implements OAuth2User, UserDetails, OidcUser {
     public static UserPrincipal create(AuthSocial auth, String userId) {
         return new UserPrincipal(
                 userId,
-                auth.getPassword(),
+                "",
                 auth.getSocialJoinType(),
                 RoleType.USER,
                 Collections.singletonList(new SimpleGrantedAuthority(RoleType.USER.getCode()))

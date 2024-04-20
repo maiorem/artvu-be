@@ -1,5 +1,7 @@
 package com.art.api.user.application;
 
+import com.art.api.core.exception.ClientUserNotFoundException;
+import com.art.api.core.exception.UserInfoNotExistException;
 import com.art.api.user.domain.entity.AuthSocial;
 import com.art.api.user.domain.entity.User;
 import com.art.api.user.domain.oauth.UserPrincipal;
@@ -24,13 +26,12 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> clientUser = memberRepository.findByUserId(username);
         if(clientUser.isEmpty()) {
-
+            throw new ClientUserNotFoundException();
         }
         AuthSocial auth = authSocialRepository.findByUser(clientUser.get());
         if(auth == null) {
-
+            throw new UserInfoNotExistException();
         }
-
         return UserPrincipal.create(auth, clientUser.get().getUserId());
     }
 }

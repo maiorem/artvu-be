@@ -9,7 +9,7 @@ public class OAuth2UserInfoFactory {
         switch (type) {
             case KAKAO: return new KakaoOAuth2UserInfo(attributes);
             default: throw new IllegalArgumentException(
-                    "ProviderType not supported: " + type);
+                    "Social Join Type not supported: " + type);
         }
     }
 
