@@ -60,7 +60,7 @@ cors:
   allowed-headers: '*'
   max-age: 3600
   allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
-  allowed-origins: '*'
+  allowed-origins: 'https://dev.artvu.co.kr'
 
 springdoc:
   show-login-endpoint: true

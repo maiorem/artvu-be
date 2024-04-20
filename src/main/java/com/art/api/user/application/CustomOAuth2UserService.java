@@ -1,11 +1,13 @@
 package com.art.api.user.application;
 
 import com.art.api.core.exception.OAuthProviderMissMatchException;
+import com.art.api.core.exception.UserInfoNotExistException;
 import com.art.api.user.domain.entity.*;
 import com.art.api.user.domain.oauth.OAuth2UserInfo;
 import com.art.api.user.domain.oauth.OAuth2UserInfoFactory;
 import com.art.api.user.domain.oauth.UserPrincipal;
 import com.art.api.user.infrastructure.repository.AuthSocialRepository;
+import com.art.api.user.infrastructure.repository.MemberProfileRepository;
 import com.art.api.user.infrastructure.repository.MemberRepository;
 import com.art.api.user.infrastructure.repository.UserAuthRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Slf4j
@@ -27,6 +31,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final MemberRepository memberRepository;
     private final AuthSocialRepository authSocialRepository;
     private final UserAuthRepository userAuthRepository;
+    private final MemberProfileRepository profileRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -52,7 +57,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (clientUserOptional.isPresent()) {
             auth = authSocialRepository.findByUser(clientUserOptional.get());
             if (auth == null) {
-
+                throw new UserInfoNotExistException();
             }
             clientUser = clientUserOptional.get();
             userId = clientUser.getUserId();
@@ -76,6 +81,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 
     private User createUser(OAuth2UserInfo clientUserInfo, SocialJoinType type) {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         User clientUser = User.builder()
                 .userId(clientUserInfo.getId())
                 .userName(clientUserInfo.getName())
@@ -91,12 +97,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         .user(clientUser)
                         .sex(Gender.valueOf(clientUserInfo.getGender().toUpperCase()))
                         .email(clientUserInfo.getEmail())
+                        .authDt(now)
+                        .build();
+
+        MemberProfile profile = MemberProfile.builder()
+                        .user(clientUser)
+                        .nickNm(clientUserInfo.getName())
+                        .joinDt(now)
                         .build();
 
         User user = memberRepository.saveAndFlush(clientUser);
         authSocialRepository.saveAndFlush(authSocial);
         userAuthRepository.saveAndFlush(userAuth);
-
+        profileRepository.saveAndFlush(profile);
         return user;
     }
 

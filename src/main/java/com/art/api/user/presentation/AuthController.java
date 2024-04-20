@@ -3,6 +3,7 @@ package com.art.api.user.presentation;
 import com.art.api.core.auth.token.AuthToken;
 import com.art.api.core.auth.token.AuthTokenProvider;
 import com.art.api.core.config.AppProperties;
+import com.art.api.core.exception.ClientUserNotFoundException;
 import com.art.api.core.response.ApiResponse;
 import com.art.api.core.utils.CookieUtil;
 import com.art.api.core.utils.HeaderUtil;
@@ -15,6 +16,7 @@ import com.art.api.user.domain.oauth.UserPrincipal;
 import com.art.api.user.infrastructure.repository.AuthSocialRepository;
 import com.art.api.user.infrastructure.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -45,6 +47,7 @@ public class AuthController {
     private final static String REFRESH_TOKEN = "refresh_token";
 
     @PostMapping("/login")
+    @Operation(hidden = true)
     public ApiResponse clientUserLogin(HttpServletRequest request, HttpServletResponse response, @RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 authRequest.getId(), authRequest.getPassword()));
@@ -61,9 +64,8 @@ public class AuthController {
                 new Date(now.getTime() + refreshTokenExpiry));
 
         Optional<User> optionalUser = memberRepository.findByUserId(userId);
-        // TODO Exception
         if (optionalUser.isEmpty()) {
-
+            throw new ClientUserNotFoundException();
         }
         AuthSocial authSocial = authSocialRepository.findByUser(optionalUser.get());
         if (authSocial == null) {
@@ -88,6 +90,7 @@ public class AuthController {
      * 클라이이언트의 Access Token 만료인 경우, Refresh Token 을 이용하여 Access Token 재발급
      */
     @GetMapping("/refresh")
+    @Operation(hidden = true)
     public ApiResponse refreshToken(HttpServletRequest request, HttpServletResponse response) {
         String accessToken = HeaderUtil.getAccessToken(request);
         AuthToken authToken = tokenProvider.convertAuthToken(accessToken);
@@ -114,9 +117,8 @@ public class AuthController {
         }
 
         Optional<User> optionalUser = memberRepository.findByUserId(userId);
-        // TODO Exception
         if (optionalUser.isEmpty()) {
-
+            throw new ClientUserNotFoundException();
         }
         // userId refresh token 으로 DB 확인
         AuthSocial authSocial = authSocialRepository.findByUserAndRefreshToken(optionalUser.get(), refreshToken);

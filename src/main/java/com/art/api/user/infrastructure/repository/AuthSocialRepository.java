@@ -12,4 +12,6 @@ public interface AuthSocialRepository extends JpaRepository<AuthSocial, Integer>
     AuthSocial findByUser(User user);
 
     AuthSocial findByUserAndRefreshToken(User user, String refreshToken);
+
+    void deleteByUser(User user);
 }

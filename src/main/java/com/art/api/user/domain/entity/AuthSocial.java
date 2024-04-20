@@ -24,11 +24,7 @@ public class AuthSocial extends BaseEntity {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @Column(length = 64, name = "PASSWORD")
-    @Comment("비밀번호")
-    private String password;
-
-    @Column(length = 200, name = "PROFILE_IMG_URL")
+    @Column(length = 200, name = "IMG_URL")
     @Comment("프로필 이미지")
     private String profileImgUrl;
 
@@ -46,7 +42,7 @@ public class AuthSocial extends BaseEntity {
     private String accessToken;
 
     @Column(length = 256, name = "REFRESH_TOKEN")
-    @Comment("리스레쉬_토큰")
+    @Comment("리프레시 토큰")
     private String refreshToken;
 
 }
