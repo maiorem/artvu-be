@@ -31,9 +31,6 @@ public class ArtDetail {
     @Comment("런타임")
     private String artRuntime;
 
-    @Column(length = 50, name = "ART_SHOW_AGE")
-    @Comment("공연관람연령")
-    private String artShowAge;
 
     @Column(length = 100, name = "PROD_COMP_NM")
     @Comment("제작사")

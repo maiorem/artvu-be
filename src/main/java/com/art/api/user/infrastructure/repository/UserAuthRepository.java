@@ -1,15 +1,14 @@
 package com.art.api.user.infrastructure.repository;
 
 import com.art.api.user.domain.entity.User;
+import com.art.api.user.domain.entity.UserAuth;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public interface MemberRepository extends JpaRepository<User, Long> {
+public interface UserAuthRepository extends JpaRepository<UserAuth, Integer> {
 
-    Optional<User> findByUserId(String id);
+    UserAuth findByUser(User user);
 
-    void deleteByUserId(String userId);
+    void deleteByUser(User user);
 }
