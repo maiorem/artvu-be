@@ -20,9 +20,9 @@ public class ArtController {
 
     @GetMapping()
     @Operation(description = "공연 목록 (검색, 지역, 장르)")
-    public ApiResponse<?> artList(@RequestParam(required = false) @Schema(description = "장르명") String genre,
-                                  @RequestParam(required = false) @Schema(description = "지역명") String local,
-                                  @RequestParam(required = false) @Schema(description = "검색키워드") String search,
+    public ApiResponse<?> artList(@RequestParam(required = false, name = "genre") @Schema(description = "장르명") String genre,
+                                  @RequestParam(required = false, name = "local") @Schema(description = "지역명") String local,
+                                  @RequestParam(required = false, name = "search") @Schema(description = "검색키워드") String search,
                                   @PageableDefault(size = 6, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pagable){
 
 

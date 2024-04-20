@@ -77,7 +77,7 @@ public class ArtDetailDTO {
 
         return new ArtDetailDTO(artList.getArtId(),
                                 artList.getArtNm(),
-                                artDetail.getArtShowAge(),
+                                artList.getArtShowAge(),
                                 artList.getStatus(),
                                 artList.getOrgPrice(),
                                 artList.getMinPrice(),
