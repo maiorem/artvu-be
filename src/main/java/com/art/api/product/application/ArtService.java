@@ -4,12 +4,17 @@ package com.art.api.product.application;
 import com.art.api.common.domain.entity.ArtArea;
 import com.art.api.common.infrastructure.GenreRepository;
 import com.art.api.common.infrastructure.LocalRepository;
+import com.art.api.core.exception.ItemNotFoundException;
 import com.art.api.facility.infrastructure.ArtFacRepository;
 import com.art.api.product.domain.dto.ArtDetailDTO;
 import com.art.api.product.domain.dto.ArtListDTO;
 import com.art.api.product.domain.dto.ThemeDTO;
 import com.art.api.product.domain.entity.*;
 import com.art.api.product.infrastructure.*;
+import com.art.api.user.domain.entity.SaveHist;
+import com.art.api.user.domain.entity.User;
+import com.art.api.user.infrastructure.repository.SaveHistRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -43,7 +48,7 @@ public class ArtService {
         return artList;
     }
 
-    private Page<ArtListDTO> convertArtList(Page<ArtList> artList) {
+    public Page<ArtListDTO> convertArtList(Page<ArtList> artList) {
         List<ArtListDTO> list = new ArrayList<>();
         artList.stream().forEach(item -> {
 
@@ -71,18 +76,45 @@ public class ArtService {
         return result;
     }
 
+    public List<ArtListDTO> convertArtList(List<ArtList> artList) {
+        List<ArtListDTO> list = new ArrayList<>();
+        artList.stream().forEach(item -> {
+
+            ArtListDTO dto = ArtListDTO.convertEntityToDto(item);
+            ArtArea area = areaRepository.findByAreaCode(item.getAreaCode().getAreaCode());
+            Optional<List<ArtImg>> artImgList = imgListRepository.findAllByArtList(item);
+            String posterUrl = "";
+            if(artImgList.isPresent()) {
+                posterUrl = artImgList.get().stream().filter(n -> n.getClsCode().equals(ClsCode.KOPIS)).findAny().orElse(ArtImg.builder().imgUrl("").build()).getImgUrl();
+            }
+            Optional<List<ArtGenreMppg>> mappingList = mappRepository.findAllByArtList(item.getArtId());
+
+            dto.setArea(area.getAreaNm());
+            dto.setPosterUrl(posterUrl);
+            mappingList.ifPresent(artGenreMppgs -> {
+                for (ArtGenreMppg genre : artGenreMppgs) {
+                    dto.getGenreList().add(genreRepository.findByArtGenreId(genre.getGenreList().getArtGenreId()));
+                }
+            });
+            list.add(dto);
+        });
+        return list;
+    }
+
+
+
     public ArtDetailDTO retrieveArtDetail(String artId) {
         Optional<ArtList> art = artListRepository.findByArtId(artId);
         if(art.isEmpty()) {
-
+            throw new ItemNotFoundException();
         }
         Optional<ArtDetail> detail = detailRepository.findByArtId(artId);
         if (detail.isEmpty()) {
-
+            throw new ItemNotFoundException();
         }
         Optional<ArtTime> time = timeRepository.findByArtlist(art.get());
         if (time.isEmpty()) {
-
+            throw new ItemNotFoundException();
         }
         ArtDetailDTO dto = ArtDetailDTO.convertEntityToDto(art.get(), detail.get(), time.get(), art.get().getArtFacId());
 
@@ -109,7 +141,7 @@ public class ArtService {
             for (ThemeHist themeHist : themeHists) {
                 Optional<ArtList> art = artListRepository.findByArtId(themeHist.getArtList().getArtId());
                 if (art.isEmpty()) {
-
+                    throw new ItemNotFoundException();
                 }
                 ThemeDTO dto = ThemeDTO.convertEntityToDto(art.get(), theme.get());
                 Optional<List<ArtImg>> artImgList = imgListRepository.findAllByArtList(art.get());
@@ -124,4 +156,9 @@ public class ArtService {
 
         return list;
     }
+
+    public Optional<ArtList> findByArtId(String artId) {
+        return findByArtId(artId);
+    }
+
 }

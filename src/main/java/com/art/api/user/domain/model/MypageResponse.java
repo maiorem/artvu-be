@@ -14,18 +14,22 @@ public class MypageResponse {
     private String profileImgUrl;
     private String email;
     private Gender gender;
+    private Long totSaveCount;
 
-    public MypageResponse(String userId, String userName, String nickNm, String profileImgUrl, String email, Gender gender) {
+    public MypageResponse() {}
+
+    public MypageResponse(String userId, String userName, String nickNm, String profileImgUrl, String email, Gender gender, Long totSaveCount) {
         this.userId = userId;
         this.userName = userName;
         this.nickNm = nickNm;
         this.profileImgUrl = profileImgUrl;
         this.email = email;
         this.gender = gender;
+        this.totSaveCount = totSaveCount;
     }
 
-    public static MypageResponse of(String userId, String userName, String nickNm, String profileImgUrl, String email, Gender gender) {
-        return new MypageResponse(userId, userName, nickNm, profileImgUrl, email, gender);
+    public static MypageResponse of(String userId, String userName, String nickNm, String profileImgUrl, String email, Gender gender, Long totSaveCount) {
+        return new MypageResponse(userId, userName, nickNm, profileImgUrl, email, gender, totSaveCount);
     }
 
 }
