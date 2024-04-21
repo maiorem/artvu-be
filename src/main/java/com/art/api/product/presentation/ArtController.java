@@ -3,6 +3,7 @@ package com.art.api.product.presentation;
 
 import com.art.api.core.response.ApiResponse;
 import com.art.api.product.application.ArtService;
+import com.art.api.user.application.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +12,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/performs")
 public class ArtController {
 
     private final ArtService artService;
+    private final MemberService memberService;
 
     @GetMapping()
     @Operation(description = "공연 목록 (검색, 지역, 장르)")
@@ -40,5 +44,6 @@ public class ArtController {
     public ApiResponse<?> retrieveThemeList(@PathVariable String themeNm){
         return ApiResponse.success("data", artService.retrieveThemeList(themeNm));
     }
+
 
 }

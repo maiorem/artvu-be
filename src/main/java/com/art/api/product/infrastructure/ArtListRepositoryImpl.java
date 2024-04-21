@@ -1,7 +1,10 @@
 package com.art.api.product.infrastructure;
 
 
+import com.art.api.common.domain.entity.GenreList;
+import com.art.api.product.domain.dto.ArtListDTO;
 import com.art.api.product.domain.entity.ArtList;
+import com.art.api.user.domain.entity.User;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.micrometer.common.util.StringUtils;
@@ -13,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static com.art.api.product.domain.entity.QArtList.artList;
+import static com.art.api.product.domain.entity.QArtGenreMppg.artGenreMppg;
 import static com.art.api.common.domain.entity.QGenreList.genreList;
 import static com.art.api.common.domain.entity.QArtArea.artArea;
 
@@ -50,4 +54,15 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
 
         return new PageImpl<>(result, pageable, count);
     }
+
+    @Override
+    public List<ArtList> findSuggestList(List<GenreList> genreList) {
+        return jpaQueryFactory
+                .selectFrom(artList)
+                .leftJoin(artList.artGenreMppgs)
+                .where(artGenreMppg.genreList.in(genreList))
+                .limit(6)
+                .fetch();
+    }
+
 }
