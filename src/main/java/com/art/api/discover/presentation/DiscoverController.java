@@ -19,7 +19,7 @@ public class DiscoverController {
     private final DiscoverService discoverService;
 
     @GetMapping("/discovery")
-    @Operation(description = "디스커버리")
+    @Operation(summary = "디스커버")
     public ApiResponse<?> discovery(@PageableDefault(size = 1, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pagable) {
         return ApiResponse.success("data", discoverService.retrieveDiscovery(pagable));
     }

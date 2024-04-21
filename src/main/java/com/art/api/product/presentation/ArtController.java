@@ -23,7 +23,7 @@ public class ArtController {
     private final MemberService memberService;
 
     @GetMapping()
-    @Operation(description = "공연 목록 (검색, 지역, 장르)")
+    @Operation(summary = "공연 목록 (검색, 지역, 장르)")
     public ApiResponse<?> artList(@RequestParam(required = false, name = "genre") @Schema(description = "장르명") String genre,
                                   @RequestParam(required = false, name = "local") @Schema(description = "지역명") String local,
                                   @RequestParam(required = false, name = "search") @Schema(description = "검색키워드") String search,
@@ -33,15 +33,15 @@ public class ArtController {
         return ApiResponse.success("data", artService.retrieveArtList(pagable, genre, local, search));
     }
 
-    @GetMapping("/{artId}")
-    @Operation(description = "공연 상세")
-    public ApiResponse<?> artDetail(@PathVariable String artId){
+    @GetMapping("/{art_id}")
+    @Operation(summary = "공연 상세")
+    public ApiResponse<?> artDetail(@PathVariable(name = "art_id") String artId){
         return ApiResponse.success("data", artService.retrieveArtDetail(artId));
     }
 
-    @GetMapping("/theme/{themeNm}")
-    @Operation(description = "공연 상세")
-    public ApiResponse<?> retrieveThemeList(@PathVariable String themeNm){
+    @GetMapping("/theme/{theme_nm}")
+    @Operation(summary = "테마이름 별 공연")
+    public ApiResponse<?> retrieveThemeList(@PathVariable(name = "theme_nm") String themeNm){
         return ApiResponse.success("data", artService.retrieveThemeList(themeNm));
     }
 

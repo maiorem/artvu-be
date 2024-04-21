@@ -51,7 +51,7 @@ public class MemberController {
 
 
     @GetMapping("/mypage")
-    @Operation(summary = "마이페이지", description = "마이페이지 유저정보 가져오기")
+    @Operation(summary = "회원정보", description = "아이디/이름/닉네임/프로필이미지/이메일/성별/저장한 연극 수")
     public ApiResponse<?> getMyPageInfo() {
         User clientUser = securityUserInfo();
         MemberProfile profile = memberService.getProfile(clientUser);
@@ -88,9 +88,9 @@ public class MemberController {
     }
 
 
-    @PostMapping("/save/{artId}")
-    @Operation(description = "저장하기 / 저장취소(두번선택)")
-    public ApiResponse<?> save(@PathVariable @Schema(description = "저장할/저장취소할 공연ID") String artId) {
+    @PostMapping("/save/{art_id}")
+    @Operation(summary = "저장하기 / 저장취소(두번선택)")
+    public ApiResponse<?> save(@PathVariable(name = "art_id") @Schema(description = "저장할/저장취소할 공연ID") String artId) {
         User user = securityUserInfo();
         Optional<ArtList> artList = artService.findByArtId(artId);
         if (artList.isEmpty()) {
@@ -105,7 +105,7 @@ public class MemberController {
     }
 
     @GetMapping("/user/mylist")
-    @Operation(description = "저장한 연극 목록")
+    @Operation(summary = "저장한 연극 목록")
     public ApiResponse<?> saveList(@PageableDefault(size = 6, sort = "artId", direction = Sort.Direction.DESC) Pageable pagable) {
         User user = securityUserInfo();
         Page<ArtListDTO> artList = artService.convertArtList(memberService.retrieveMySaveList(pagable, user));
@@ -113,14 +113,14 @@ public class MemberController {
     }
 
     @GetMapping("/user/prefer")
-    @Operation(description = "선호 장르 목록 (map)")
+    @Operation(summary = "선호 장르 목록 (map)")
     public ApiResponse<?> preferGenre(){
         User user = securityUserInfo();
         return ApiResponse.success("data", memberService.retrievePreferGenreCount(user));
     }
 
     @GetMapping("/suggest")
-    @Operation(description = "추천 공연 목록")
+    @Operation(summary = "추천 공연 목록")
     public ApiResponse<?> retrieveListSuggestList(){
         User user = securityUserInfo();
         // 유저가 저장한 공연이 세개 이하면 빈 값 반환
