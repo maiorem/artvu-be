@@ -1,6 +1,7 @@
-package com.art.api.product.domain.entity;
+package com.art.api.user.domain.entity;
 
 import com.art.api.core.entity.BaseEntity;
+import com.art.api.product.domain.entity.ArtList;
 import com.art.api.user.domain.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
