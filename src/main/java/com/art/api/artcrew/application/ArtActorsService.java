@@ -50,19 +50,6 @@ public class ArtActorsService {
             return null;
         }
         PeopleDTO dto = PeopleDTO.convertEntityToDto(byArtId.get());
-
-        Optional<ArtList> art = listRepository.findByArtId(artId);
-        if(art.isEmpty()) {
-            return null;
-        }
-        Optional<List<ArtActors>> actorList = actorRepository.findAllByArtList(art.get());
-        if (actorList.isPresent()) {
-            for (ArtActors artActors : actorList.get()) {
-                dto.getActors().add(artActors);
-            }
-        } else {
-            return null;
-        }
         return dto;
     }
 
