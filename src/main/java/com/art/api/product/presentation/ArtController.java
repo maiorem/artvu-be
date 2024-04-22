@@ -3,16 +3,20 @@ package com.art.api.product.presentation;
 
 import com.art.api.core.response.ApiResponse;
 import com.art.api.product.application.ArtService;
+import com.art.api.product.domain.dto.ArtDetailDTO;
+import com.art.api.product.domain.dto.ArtListDTO;
+import com.art.api.product.domain.dto.ThemeDTO;
 import com.art.api.user.application.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,20 +33,32 @@ public class ArtController {
                                   @RequestParam(required = false, name = "search") @Schema(description = "검색키워드") String search,
                                   @PageableDefault(size = 6, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pagable){
 
+        Page<ArtListDTO> artListDTOS = artService.retrieveArtList(pagable, genre, local, search);
+        if(artListDTOS == null) {
+            return ApiResponse.notExistData();
+        }
 
-        return ApiResponse.success("data", artService.retrieveArtList(pagable, genre, local, search));
+        return ApiResponse.success("data", artListDTOS);
     }
 
     @GetMapping("/{art_id}")
     @Operation(summary = "공연 상세")
     public ApiResponse<?> artDetail(@PathVariable(name = "art_id") String artId){
-        return ApiResponse.success("data", artService.retrieveArtDetail(artId));
+        ArtDetailDTO artDetailDTO = artService.retrieveArtDetail(artId);
+        if (artDetailDTO == null) {
+            return ApiResponse.notExistData();
+        }
+        return ApiResponse.success("data", artDetailDTO);
     }
 
     @GetMapping("/theme/{theme_nm}")
     @Operation(summary = "테마이름 별 공연")
     public ApiResponse<?> retrieveThemeList(@PathVariable(name = "theme_nm") String themeNm){
-        return ApiResponse.success("data", artService.retrieveThemeList(themeNm));
+        List<ThemeDTO> list = artService.retrieveThemeList(themeNm);
+        if(list == null) {
+            return ApiResponse.notExistData();
+        }
+        return ApiResponse.success("data", list);
     }
 
 

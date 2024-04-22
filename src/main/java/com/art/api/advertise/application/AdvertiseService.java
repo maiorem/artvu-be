@@ -15,7 +15,11 @@ public class AdvertiseService {
     private final AdvertiseRepository advertiseRepository;
 
     public List<Carousel> retrieveCarousel(){
-        return advertiseRepository.findAll();
+        List<Carousel> list = advertiseRepository.findAll();
+        if ( list == null ) {
+            return null;
+        }
+        return list;
     }
 
 
