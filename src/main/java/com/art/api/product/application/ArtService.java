@@ -156,7 +156,7 @@ public class ArtService {
     }
 
     public Optional<ArtList> findByArtId(String artId) {
-        return findByArtId(artId);
+        return artListRepository.findByArtId(artId);
     }
 
 }
