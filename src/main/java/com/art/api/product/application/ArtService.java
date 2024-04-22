@@ -60,7 +60,6 @@ public class ArtService {
                 posterUrl = artImgList.get().stream().filter(n -> n.getClsCode().equals(ClsCode.KOPIS)).findAny().orElse(ArtImg.builder().imgUrl("").build()).getImgUrl();
             }
             Optional<List<ArtGenreMppg>> mappingList = mappRepository.findAllByArtList(item.getArtId());
-
             dto.setArea(area.getAreaNm());
             dto.setPosterUrl(posterUrl);
             mappingList.ifPresent(artGenreMppgs -> {
@@ -88,7 +87,6 @@ public class ArtService {
                 posterUrl = artImgList.get().stream().filter(n -> n.getClsCode().equals(ClsCode.KOPIS)).findAny().orElse(ArtImg.builder().imgUrl("").build()).getImgUrl();
             }
             Optional<List<ArtGenreMppg>> mappingList = mappRepository.findAllByArtList(item.getArtId());
-
             dto.setArea(area.getAreaNm());
             dto.setPosterUrl(posterUrl);
             mappingList.ifPresent(artGenreMppgs -> {
@@ -106,15 +104,15 @@ public class ArtService {
     public ArtDetailDTO retrieveArtDetail(String artId) {
         Optional<ArtList> art = artListRepository.findByArtId(artId);
         if(art.isEmpty()) {
-            throw new ItemNotFoundException();
+            return null;
         }
         Optional<ArtDetail> detail = detailRepository.findByArtId(artId);
         if (detail.isEmpty()) {
-            throw new ItemNotFoundException();
+            return null;
         }
         Optional<ArtTime> time = timeRepository.findByArtlist(art.get());
         if (time.isEmpty()) {
-            throw new ItemNotFoundException();
+            return null;
         }
         ArtDetailDTO dto = ArtDetailDTO.convertEntityToDto(art.get(), detail.get(), time.get(), art.get().getArtFacId());
 
@@ -134,7 +132,7 @@ public class ArtService {
         List<ThemeDTO> list = new ArrayList<>();
         Optional<Theme> theme = themeRepository.findByThemeNm(themeNm);
         if(theme.isEmpty()) {
-
+            return null;
         }
         Optional<List<ThemeHist>> themeHistList = themeHistRepository.findByTheme(theme.get());
         themeHistList.ifPresent(themeHists -> {

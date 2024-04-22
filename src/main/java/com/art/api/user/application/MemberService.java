@@ -122,7 +122,7 @@ public class MemberService {
         Long count = countSaveHistByUser(user);
         List<SaveHist> saveHistList = saveHistRepository.findByUser(user);
         if(saveHistList == null) {
-            throw new ItemNotFoundException();
+            return null;
         }
         List<ArtList> list = new ArrayList<>();
         for (SaveHist saveHist : saveHistList) {

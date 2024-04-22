@@ -1,5 +1,6 @@
 package com.art.api.user.presentation;
 
+import com.art.api.common.domain.entity.GenreList;
 import com.art.api.core.exception.ClientUserNotFoundException;
 import com.art.api.core.exception.ItemNotFoundException;
 import com.art.api.core.exception.NotEnoughDataException;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -56,15 +58,15 @@ public class MemberController {
         User clientUser = securityUserInfo();
         MemberProfile profile = memberService.getProfile(clientUser);
         if (profile == null) {
-            throw new UserInfoNotExistException();
+            return ApiResponse.notFoundUser();
         }
         UserAuth userAuth = memberService.getUserInfo(clientUser);
         if (userAuth == null) {
-            throw new UserInfoNotExistException();
+            return ApiResponse.notFoundUser();
         }
         AuthSocial authSocial = memberService.getAuthInfo(clientUser);
         if (authSocial == null) {
-            throw new UserInfoNotExistException();
+            return ApiResponse.notFoundUser();
         }
         MypageResponse response = MypageResponse.of(clientUser.getUserId(), clientUser.getUserName(), profile.getNickNm(), authSocial.getProfileImgUrl(), userAuth.getEmail(), userAuth.getSex(), memberService.countSaveHistByUser(clientUser));
         return ApiResponse.success("data", response);
@@ -94,7 +96,7 @@ public class MemberController {
         User user = securityUserInfo();
         Optional<ArtList> artList = artService.findByArtId(artId);
         if (artList.isEmpty()) {
-            throw new ItemNotFoundException();
+            return ApiResponse.notExistData();
         }
         if (memberService.updateSaveHist(user, artList.get())) {
             return ApiResponse.success("data", "저장 완료");
@@ -109,6 +111,9 @@ public class MemberController {
     public ApiResponse<?> saveList(@PageableDefault(size = 6, sort = "artId", direction = Sort.Direction.DESC) Pageable pagable) {
         User user = securityUserInfo();
         Page<ArtListDTO> artList = artService.convertArtList(memberService.retrieveMySaveList(pagable, user));
+        if(artList == null) {
+            return ApiResponse.notExistData();
+        }
         return ApiResponse.success("data", artList);
     }
 
@@ -116,7 +121,11 @@ public class MemberController {
     @Operation(summary = "선호 장르 목록 (map)")
     public ApiResponse<?> preferGenre(){
         User user = securityUserInfo();
-        return ApiResponse.success("data", memberService.retrievePreferGenreCount(user));
+        Map<GenreList, Integer> genreListIntegerMap = memberService.retrievePreferGenreCount(user);
+        if (genreListIntegerMap == null) {
+            return ApiResponse.notExistData();
+        }
+        return ApiResponse.success("data", genreListIntegerMap);
     }
 
     @GetMapping("/suggest")
@@ -126,9 +135,12 @@ public class MemberController {
         // 유저가 저장한 공연이 세개 이하면 빈 값 반환
         Long count = memberService.countSaveHistByUser(user);
         if (count < 3) {
-            throw new NotEnoughDataException();
+            return ApiResponse.notEnoughData();
         } else {
             List<ArtListDTO> artList = artService.convertArtList(memberService.retrieveListSuggestList(user));
+            if (artList == null) {
+                return ApiResponse.notExistData();
+            }
             Collections.shuffle(artList);
             return ApiResponse.success("data", artList);
         }
