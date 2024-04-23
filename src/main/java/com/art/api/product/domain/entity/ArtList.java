@@ -2,6 +2,7 @@ package com.art.api.product.domain.entity;
 
 import com.art.api.common.domain.entity.ArtArea;
 import com.art.api.facility.domain.entity.ArtFacDetail;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -28,6 +29,7 @@ public class ArtList {
     @Comment("공연명")
     private String artNm;
 
+    @JsonIgnore
     @Comment("공연시설ID")
     @JoinColumn(name = "ART_FAC_ID")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -59,18 +61,22 @@ public class ArtList {
     @Comment("공연관람연령")
     private String artShowAge;
 
+    @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "artList")
     private List<ArtGenreMppg> artGenreMppgs = new ArrayList<>();
 
+    @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "artList")
     private List<ArtImg> artImgList = new ArrayList<>();
 
+    @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "artList")
     private List<ThemeHist> themeList = new ArrayList<>();
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "AREA_CODE")
     @Comment("지역정보-지역코드")
