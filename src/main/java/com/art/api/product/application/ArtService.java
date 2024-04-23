@@ -109,7 +109,7 @@ public class ArtService {
         if (time.isEmpty()) {
             return null;
         }
-        ArtDetailDTO dto = ArtDetailDTO.convertEntityToDto(art.get(), detail.get(), time.get(), art.get().getArtFacId());
+        ArtDetailDTO dto = ArtDetailDTO.convertEntityToDto(art.get(), detail.get(), time.get());
 
         Optional<List<ArtImg>> artImgList = imgListRepository.findAllByArtList(art.get());
         artImgList.ifPresent(dto::setArtImgList);

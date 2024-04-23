@@ -44,18 +44,14 @@ public class ArtDetailDTO {
 
     private String contDetail;
 
-    private String artFacId;
-
-    private String cityNm;
-
-    private String artFacNm;
+    private ArtFacilityDto facilityDto;
 
     private List<ArtImg> artImgList = new ArrayList<>();
 
     private List<GenreList> genreList = new ArrayList<>();
 
     @QueryProjection
-    public ArtDetailDTO(String artId, String artNm, String artShowAge, String status, int orgPrice, int minPrice, String artRuntime, String artStrDt, String artEndDt, int intermisMi, String summary, String contDetail, String artFacId, String cityNm, String artFacNm) {
+    public ArtDetailDTO(String artId, String artNm, String artShowAge, String status, int orgPrice, int minPrice, String artRuntime, String artStrDt, String artEndDt, int intermisMi, String summary, String contDetail, ArtFacilityDto facilityDto) {
         this.artId = artId;
         this.artNm = artNm;
         this.artShowAge = artShowAge;
@@ -68,12 +64,10 @@ public class ArtDetailDTO {
         this.intermisMi = intermisMi;
         this.summary = summary;
         this.contDetail = contDetail;
-        this.artFacId = artFacId;
-        this.cityNm = cityNm;
-        this.artFacNm = artFacNm;
+        this.facilityDto = facilityDto;
     }
 
-    public static ArtDetailDTO convertEntityToDto(ArtList artList, ArtDetail artDetail, ArtTime artTime, ArtFacDetail artFacDetail){
+    public static ArtDetailDTO convertEntityToDto(ArtList artList, ArtDetail artDetail, ArtTime artTime){
 
         return new ArtDetailDTO(artList.getArtId(),
                                 artList.getArtNm(),
@@ -87,9 +81,7 @@ public class ArtDetailDTO {
                                 artDetail.getIntermisMi(),
                                 artDetail.getSummary(),
                                 artDetail.getContDetail(),
-                                artFacDetail.getArtFacId(),
-                                artFacDetail.getCityNm(),
-                                artFacDetail.getArtFacNm());
+                                ArtFacilityDto.of(artList.getArtFacId()));
     }
 
 }
