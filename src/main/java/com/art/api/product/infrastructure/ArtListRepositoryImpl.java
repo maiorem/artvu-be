@@ -59,7 +59,8 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
     public List<ArtList> findSuggestList(List<GenreList> genreList) {
         return jpaQueryFactory
                 .selectFrom(artList)
-                .leftJoin(artList.artGenreMppgs)
+                .leftJoin(artList.artGenreMppgs, artGenreMppg)
+                .on(artList.artId.eq(artGenreMppg.artList.artId))
                 .where(artGenreMppg.genreList.in(genreList))
                 .limit(6)
                 .fetch();

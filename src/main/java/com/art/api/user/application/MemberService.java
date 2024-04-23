@@ -1,26 +1,28 @@
 package com.art.api.user.application;
 
-import com.art.api.common.domain.entity.ArtArea;
 import com.art.api.common.domain.entity.GenreList;
-import com.art.api.core.exception.ItemNotFoundException;
-import com.art.api.product.domain.dto.ArtListDTO;
 import com.art.api.product.domain.entity.ArtGenreMppg;
-import com.art.api.product.domain.entity.ArtImg;
 import com.art.api.product.domain.entity.ArtList;
-import com.art.api.product.domain.entity.ClsCode;
 import com.art.api.product.infrastructure.ArtListRepository;
 import com.art.api.user.domain.entity.*;
+import com.art.api.user.domain.model.KakaoUnlinkRequest;
 import com.art.api.user.domain.model.UpdateUserInfoRequest;
 import com.art.api.user.infrastructure.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -31,6 +33,9 @@ public class MemberService {
     private final AuthSocialRepository authSocialRepository;
     private final MemberProfileRepository profileRepository;
     private final SaveHistRepository saveHistRepository;
+
+    @Value("${spring.open-api.kakaoAdminKey}")
+    private String kakaoAdminKey;
 
     /**
      * 로그인 유저정보 가져오기
@@ -58,6 +63,27 @@ public class MemberService {
         authSocialRepository.deleteByUser(user);
         profileRepository.deleteByUser(user);
         memberRepository.deleteByUserId(user.getUserId());
+
+
+        //카카오 연결 해제
+        WebClient client = WebClient.builder()
+                .baseUrl("https://kapi.kakao.com/v1/user")
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, String.valueOf(MediaType.APPLICATION_FORM_URLENCODED))
+                .defaultHeader("Authorization", "KakaoAK" + " " + kakaoAdminKey)
+                .build();
+
+        KakaoUnlinkRequest request = new KakaoUnlinkRequest();
+        request.setTarget_id_type("user_id");
+        request.setTartget_id(Long.parseLong(user.getUserId()));
+
+        client.post()
+                .uri("/unlink")
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(String.class)
+                .onErrorReturn("카카오 연결 끊기 실패")
+                .subscribe(log::error);
+
     }
 
 

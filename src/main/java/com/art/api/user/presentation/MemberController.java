@@ -2,11 +2,7 @@ package com.art.api.user.presentation;
 
 import com.art.api.common.domain.entity.GenreList;
 import com.art.api.core.exception.ClientUserNotFoundException;
-import com.art.api.core.exception.ItemNotFoundException;
-import com.art.api.core.exception.NotEnoughDataException;
-import com.art.api.core.exception.UserInfoNotExistException;
 import com.art.api.core.response.ApiResponse;
-import com.art.api.discover.domain.dto.DiscoveryDTO;
 import com.art.api.product.application.ArtService;
 import com.art.api.product.domain.dto.ArtListDTO;
 import com.art.api.product.domain.entity.ArtList;
@@ -17,6 +13,7 @@ import com.art.api.user.domain.entity.User;
 import com.art.api.user.domain.entity.UserAuth;
 import com.art.api.user.domain.model.LoginResponse;
 import com.art.api.user.domain.model.MypageResponse;
+import com.art.api.user.domain.model.PreferGenreResponse;
 import com.art.api.user.domain.model.UpdateUserInfoRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,10 +26,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -125,7 +119,17 @@ public class MemberController {
         if (genreListIntegerMap == null) {
             return ApiResponse.notExistData();
         }
-        return ApiResponse.success("data", genreListIntegerMap);
+        PreferGenreResponse response = new PreferGenreResponse();
+        response.setTotCount(memberService.countSaveHistByUser(user));
+        List<PreferGenreResponse.PreferList> list = new ArrayList<>();
+        for (GenreList genreList : genreListIntegerMap.keySet()) {
+            PreferGenreResponse.PreferList dto = new PreferGenreResponse.PreferList();
+            dto.setSelectCount(genreListIntegerMap.get(genreList));
+            dto.setGenreList(genreList);
+            list.add(dto);
+        }
+        response.setContent(list);
+        return ApiResponse.success("data", response);
     }
 
     @GetMapping("/suggest")
