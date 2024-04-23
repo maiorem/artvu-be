@@ -23,6 +23,10 @@ public class Carousel extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int carouselId;
 
+    @Column(length = 2000, name = "CAROUSEL_TITLE")
+    @Comment("광고제목")
+    private String carouselTitle;
+
     @Column(length = 2000, name = "CAROUSEL_TXT")
     @Comment("광고문구")
     private String carouselText;
