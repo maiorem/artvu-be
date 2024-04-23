@@ -34,8 +34,8 @@ public class MemberService {
     private final MemberProfileRepository profileRepository;
     private final SaveHistRepository saveHistRepository;
 
-    @Value("#{spring.open-api.kakaoAdminKey}")
-    private final String kakaoAdminKey;
+    @Value("${spring.open-api.kakaoAdminKey}")
+    private String kakaoAdminKey;
 
     /**
      * 로그인 유저정보 가져오기
