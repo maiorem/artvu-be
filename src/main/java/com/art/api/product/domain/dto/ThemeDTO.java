@@ -14,6 +14,8 @@ public class ThemeDTO {
 
     private String artId;
 
+    private int themeOrdNo;
+
     private String themeNm;
 
     private String artNm;
@@ -23,15 +25,16 @@ public class ThemeDTO {
     private String posterImgUrl;
 
     @QueryProjection
-    public ThemeDTO(String artId, String themeNm, String artNm, String copyText) {
+    public ThemeDTO(String artId, int themeOrdNo, String themeNm, String artNm, String copyText) {
         this.artId = artId;
+        this.themeOrdNo = themeOrdNo;
         this.themeNm = themeNm;
         this.artNm = artNm;
         this.copyText = copyText;
     }
 
     public static ThemeDTO convertEntityToDto(ArtList artList, Theme theme) {
-        return new ThemeDTO(artList.getArtId(), theme.getThemeNm(), artList.getArtNm(), artList.getCopyText());
+        return new ThemeDTO(artList.getArtId(), theme.getThemeOrdNo(), theme.getThemeNm(), artList.getArtNm(), artList.getCopyText());
     }
 
 }

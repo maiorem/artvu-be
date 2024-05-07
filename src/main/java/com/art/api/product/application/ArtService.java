@@ -1,7 +1,6 @@
 package com.art.api.product.application;
 
 
-import com.art.api.common.domain.entity.ArtArea;
 import com.art.api.common.infrastructure.GenreRepository;
 import com.art.api.common.infrastructure.LocalRepository;
 import com.art.api.core.exception.ItemNotFoundException;
@@ -9,6 +8,7 @@ import com.art.api.facility.infrastructure.ArtFacRepository;
 import com.art.api.product.domain.dto.ArtDetailDTO;
 import com.art.api.product.domain.dto.ArtListDTO;
 import com.art.api.product.domain.dto.ThemeDTO;
+import com.art.api.product.domain.dto.ThemeListDTO;
 import com.art.api.product.domain.entity.*;
 import com.art.api.product.infrastructure.*;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,14 +49,15 @@ public class ArtService {
         List<ArtListDTO> list = new ArrayList<>();
         for (ArtList item : artList) {
             ArtListDTO dto = ArtListDTO.convertEntityToDto(item);
-            ArtArea area = areaRepository.findByAreaCode(item.getAreaCode().getAreaCode());
             Optional<List<ArtImg>> artImgList = imgListRepository.findAllByArtList(item);
             String posterUrl = "";
             if(artImgList.isPresent()) {
                 posterUrl = artImgList.get().stream().filter(n -> n.getClsCode().equals(ClsCode.KOPIS)).findAny().orElse(ArtImg.builder().imgUrl("").build()).getImgUrl();
             }
             Optional<List<ArtGenreMppg>> mappingList = mappRepository.findAllByArtList(item);
-            dto.setArea(area.getAreaNm());
+            if (item.getAreaCode() != null) {
+                dto.setArea(item.getAreaCode().getAreaNm());
+            }
             dto.setPosterUrl(posterUrl);
             mappingList.ifPresent(artGenreMppgs -> {
                 for (ArtGenreMppg genre : artGenreMppgs) {
@@ -63,8 +65,7 @@ public class ArtService {
                 }
             });
             list.add(dto);
-        };
-
+        }
 
         Page<ArtListDTO> result = new PageImpl<>(list, artList.getPageable(), artList.getSize());
         return result;
@@ -72,17 +73,18 @@ public class ArtService {
 
     public List<ArtListDTO> convertArtList(List<ArtList> artList) {
         List<ArtListDTO> list = new ArrayList<>();
-        artList.stream().forEach(item -> {
+        artList.forEach(item -> {
 
             ArtListDTO dto = ArtListDTO.convertEntityToDto(item);
-            ArtArea area = areaRepository.findByAreaCode(item.getAreaCode().getAreaCode());
             Optional<List<ArtImg>> artImgList = imgListRepository.findAllByArtList(item);
             String posterUrl = "";
             if(artImgList.isPresent()) {
                 posterUrl = artImgList.get().stream().filter(n -> n.getClsCode().equals(ClsCode.KOPIS)).findAny().orElse(ArtImg.builder().imgUrl("").build()).getImgUrl();
             }
             Optional<List<ArtGenreMppg>> mappingList = mappRepository.findAllByArtList(item);
-            dto.setArea(area.getAreaNm());
+            if (item.getAreaCode() != null) {
+                dto.setArea(item.getAreaCode().getAreaNm());
+            }
             dto.setPosterUrl(posterUrl);
             mappingList.ifPresent(artGenreMppgs -> {
                 for (ArtGenreMppg genre : artGenreMppgs) {
@@ -122,33 +124,66 @@ public class ArtService {
         return dto;
     }
 
-
-    public List<ThemeDTO> retrieveThemeList(String themeNm) {
-        List<ThemeDTO> list = new ArrayList<>();
-        Optional<Theme> theme = themeRepository.findByThemeNm(themeNm);
-        if(theme.isEmpty()) {
-            return null;
+    // 메인 테마 list
+    public List<ThemeListDTO> retrieveThemeList(){
+        List<Theme> themeList = themeRepository.findAll();
+        List<ThemeListDTO> dtoList = new ArrayList<>();
+        Collections.sort(themeList);
+        for (Theme theme : themeList) {
+            List<ThemeDTO> list = new ArrayList<>();
+            Optional<List<ThemeHist>> themeHistList = themeHistRepository.findByTheme(theme);
+            themeHistList.ifPresent(themeHists -> {
+                for (ThemeHist themeHist : themeHists) {
+                    Optional<ArtList> art = artListRepository.findByArtId(themeHist.getArtList().getArtId());
+                    if (art.isEmpty()) {
+                        throw new ItemNotFoundException();
+                    }
+                    ThemeDTO dto = ThemeDTO.convertEntityToDto(art.get(), theme);
+                    Optional<List<ArtImg>> artImgList = imgListRepository.findAllByArtList(art.get());
+                    String posterUrl = "";
+                    if(artImgList.isPresent()) {
+                        posterUrl = artImgList.get().stream().filter(n -> n.getClsCode().equals(ClsCode.KOPIS)).findAny().orElse(ArtImg.builder().imgUrl("").build()).getImgUrl();
+                    }
+                    dto.setPosterImgUrl(posterUrl);
+                    list.add(dto);
+                }
+            });
+            ThemeListDTO newListDto = ThemeListDTO.convertEntityToDto(theme);
+            newListDto.setContents(list);
+            dtoList.add(newListDto);
         }
-        Optional<List<ThemeHist>> themeHistList = themeHistRepository.findByTheme(theme.get());
-        themeHistList.ifPresent(themeHists -> {
-            for (ThemeHist themeHist : themeHists) {
-                Optional<ArtList> art = artListRepository.findByArtId(themeHist.getArtList().getArtId());
-                if (art.isEmpty()) {
-                    throw new ItemNotFoundException();
-                }
-                ThemeDTO dto = ThemeDTO.convertEntityToDto(art.get(), theme.get());
-                Optional<List<ArtImg>> artImgList = imgListRepository.findAllByArtList(art.get());
-                String posterUrl = "";
-                if(artImgList.isPresent()) {
-                    posterUrl = artImgList.get().stream().filter(n -> n.getClsCode().equals(ClsCode.KOPIS)).findAny().orElse(ArtImg.builder().imgUrl("").build()).getImgUrl();
-                }
-                dto.setPosterImgUrl(posterUrl);
-                list.add(dto);
-            }
-        });
 
-        return list;
+        return dtoList;
+
     }
+
+    // 테마 이름별 API
+//    public List<ThemeDTO> retrieveThemeList(String themeNm) {
+//        List<ThemeDTO> list = new ArrayList<>();
+//        Optional<Theme> theme = themeRepository.findByThemeNm(themeNm);
+//        if(theme.isEmpty()) {
+//            return null;
+//        }
+//        Optional<List<ThemeHist>> themeHistList = themeHistRepository.findByTheme(theme.get());
+//        themeHistList.ifPresent(themeHists -> {
+//            for (ThemeHist themeHist : themeHists) {
+//                Optional<ArtList> art = artListRepository.findByArtId(themeHist.getArtList().getArtId());
+//                if (art.isEmpty()) {
+//                    throw new ItemNotFoundException();
+//                }
+//                ThemeDTO dto = ThemeDTO.convertEntityToDto(art.get(), theme.get());
+//                Optional<List<ArtImg>> artImgList = imgListRepository.findAllByArtList(art.get());
+//                String posterUrl = "";
+//                if(artImgList.isPresent()) {
+//                    posterUrl = artImgList.get().stream().filter(n -> n.getClsCode().equals(ClsCode.KOPIS)).findAny().orElse(ArtImg.builder().imgUrl("").build()).getImgUrl();
+//                }
+//                dto.setPosterImgUrl(posterUrl);
+//                list.add(dto);
+//            }
+//        });
+//
+//        return list;
+//    }
 
     public Optional<ArtList> findByArtId(String artId) {
         return artListRepository.findByArtId(artId);
