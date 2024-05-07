@@ -5,7 +5,7 @@ import com.art.api.core.response.ApiResponse;
 import com.art.api.product.application.ArtService;
 import com.art.api.product.domain.dto.ArtDetailDTO;
 import com.art.api.product.domain.dto.ArtListDTO;
-import com.art.api.product.domain.dto.ThemeDTO;
+import com.art.api.product.domain.dto.ThemeListDTO;
 import com.art.api.user.application.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -51,11 +51,11 @@ public class ArtController {
         return ApiResponse.success("data", artDetailDTO);
     }
 
-    @GetMapping("/theme/{theme_nm}")
-    @Operation(summary = "테마이름 별 공연")
-    public ApiResponse<?> retrieveThemeList(@PathVariable(name = "theme_nm") String themeNm){
-        List<ThemeDTO> list = artService.retrieveThemeList(themeNm);
-        if(list == null) {
+    @GetMapping("/theme")
+    @Operation(summary = "메인 테마별 공연")
+    public ApiResponse<?> retrieveThemeList(){
+        List<ThemeListDTO> list = artService.retrieveThemeList();
+        if (list == null) {
             return ApiResponse.notExistData();
         }
         return ApiResponse.success("data", list);
