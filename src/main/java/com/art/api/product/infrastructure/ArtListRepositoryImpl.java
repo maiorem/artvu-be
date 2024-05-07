@@ -2,9 +2,7 @@ package com.art.api.product.infrastructure;
 
 
 import com.art.api.common.domain.entity.GenreList;
-import com.art.api.product.domain.dto.ArtListDTO;
 import com.art.api.product.domain.entity.ArtList;
-import com.art.api.user.domain.entity.User;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.micrometer.common.util.StringUtils;
@@ -17,8 +15,6 @@ import java.util.List;
 
 import static com.art.api.product.domain.entity.QArtList.artList;
 import static com.art.api.product.domain.entity.QArtGenreMppg.artGenreMppg;
-import static com.art.api.common.domain.entity.QGenreList.genreList;
-import static com.art.api.common.domain.entity.QArtArea.artArea;
 
 
 @RequiredArgsConstructor
@@ -35,9 +31,9 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
 
     private BooleanBuilder isExistKeyword(String genre, String local, String search) {
         BooleanBuilder builder = new BooleanBuilder();
-        if(!StringUtils.isEmpty(local)) builder.and(artArea.areaNm.eq(local));
+        if(!StringUtils.isEmpty(local)) builder.and(artList.areaCode.areaNm.eq(local));
         if(!StringUtils.isEmpty(search)) builder.and(artList.artNm.contains(search)).or(artList.copyText.contains(search));
-        if(!StringUtils.isEmpty(genre)) builder.and(genreList.artGenreNm.eq(genre));
+        if(!StringUtils.isEmpty(genre)) builder.and(artGenreMppg.genreList.artGenreNm.eq(genre));
         return builder;
     }
 
@@ -46,6 +42,8 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
 
         List<ArtList> result = jpaQueryFactory
                 .selectFrom(artList)
+                .leftJoin(artList.artGenreMppgs, artGenreMppg)
+                .on(artList.artId.eq(artGenreMppg.artList.artId))
                 .where( isExistKeyword(genre, local, search) )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
