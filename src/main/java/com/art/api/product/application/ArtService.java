@@ -40,7 +40,7 @@ public class ArtService {
     private final ThemeRepository themeRepository;
 
 
-    public Page<ArtListDTO> retrieveArtList(Pageable pageable, String genre, String local, String search) {
+    public Page<ArtListDTO> retrieveArtList(Pageable pageable, List<String> genre, String local, String search) {
         Page<ArtListDTO> artList = convertArtList(artListRepository.findSearchResult(pageable, genre, local, search));
         return artList;
     }
