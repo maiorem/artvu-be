@@ -29,16 +29,18 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
                 .fetchOne();
     }
 
-    private BooleanBuilder isExistKeyword(String genre, String local, String search) {
+    private BooleanBuilder isExistKeyword(List<String> genre, String local, String search) {
         BooleanBuilder builder = new BooleanBuilder();
         if(!StringUtils.isEmpty(local)) builder.and(artList.areaCode.areaNm.eq(local));
         if(!StringUtils.isEmpty(search)) builder.and(artList.artNm.contains(search)).or(artList.copyText.contains(search));
-        if(!StringUtils.isEmpty(genre)) builder.and(artGenreMppg.genreList.artGenreNm.eq(genre));
+        if(genre != null && !genre.isEmpty()) {
+            builder.and(artGenreMppg.genreList.artGenreNm.in(genre));
+        }
         return builder;
     }
 
     @Override
-    public Page<ArtList> findSearchResult(Pageable pageable, String genre, String local, String search) {
+    public Page<ArtList> findSearchResult(Pageable pageable, List<String> genre, String local, String search) {
 
         List<ArtList> result = jpaQueryFactory
                 .selectFrom(artList)

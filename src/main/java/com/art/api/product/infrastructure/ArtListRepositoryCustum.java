@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ArtListRepositoryCustum {
 
-    Page<ArtList> findSearchResult(Pageable pageable, String genre, String local, String search);
+    Page<ArtList> findSearchResult(Pageable pageable, List<String> genre, String local, String search);
 
     List<ArtList> findSuggestList(List<GenreList> genreList);
 }
