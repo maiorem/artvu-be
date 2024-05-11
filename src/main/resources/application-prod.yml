@@ -16,14 +16,6 @@ spring:
     show-sql: true
     defer-datasource-initialization: true
 
-
-
-  batch:
-    jdbc:
-      initialize-schema: always
-    job:
-      enabled: true
-
   open-api:
     secretKey: "9bc5a206710943769d657e163212035d"
     kakaoAdminKey : "5d94fcffa2a7be264a6f09015b4709a8"

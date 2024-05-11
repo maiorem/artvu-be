@@ -59,8 +59,8 @@ public class SecurityConfig {
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers(
                                 "/healthCheck",
-                                "/performs?**",
-                                "/performs/**",
+                                "/api/performs?**",
+                                "/api/performs/**",
                                 "/images/**",
                                 "/view/join",
                                 "/v3/api-docs/**",
