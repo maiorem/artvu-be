@@ -5,6 +5,7 @@ import com.art.api.common.infrastructure.LocalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -14,7 +15,9 @@ public class LocalService {
     private final LocalRepository localRepository;
 
     public List<ArtArea> areaList() {
-        return localRepository.findAll();
+        List<ArtArea> list = localRepository.findAll();
+        Collections.sort(list);
+        return list;
     }
 
 }
