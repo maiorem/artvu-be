@@ -5,6 +5,7 @@ import com.art.api.core.response.ApiResponse;
 import com.art.api.product.application.ArtService;
 import com.art.api.product.domain.dto.ArtDetailDTO;
 import com.art.api.product.domain.dto.ArtListDTO;
+import com.art.api.product.domain.dto.ThemeDTO;
 import com.art.api.product.domain.dto.ThemeListDTO;
 import com.art.api.user.application.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/performs")
+@RequestMapping("/api/performs")
 public class ArtController {
 
     private final ArtService artService;
@@ -55,6 +56,16 @@ public class ArtController {
     @Operation(summary = "메인 테마별 공연")
     public ApiResponse<?> retrieveThemeList(){
         List<ThemeListDTO> list = artService.retrieveThemeList();
+        if (list == null) {
+            return ApiResponse.notExistData();
+        }
+        return ApiResponse.success("data", list);
+    }
+
+    @GetMapping("/theme/{theme_name}")
+    @Operation(summary = "테마명으로 공연 찾기")
+    public ApiResponse<?> retrieveThemeList(@PathVariable(name = "theme_name") String themeNm){
+        List<ThemeDTO> list = artService.retrieveThemeByName(themeNm);
         if (list == null) {
             return ApiResponse.notExistData();
         }

@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/performs")
+@RequestMapping("/api/performs")
 public class AdvertiseController {
 
     private final AdvertiseService advertiseService;

@@ -37,6 +37,8 @@ public class ArtDetailDTO {
 
     private String artEndDt;
 
+    private String intermisYn;
+
     private int intermisMi;
 
     private String summary;
@@ -50,7 +52,7 @@ public class ArtDetailDTO {
     private List<GenreList> genreList = new ArrayList<>();
 
     @QueryProjection
-    public ArtDetailDTO(String artId, String artNm, String artShowAge, String status, int orgPrice, int minPrice, String artStrDt, String artEndDt, String artRuntime, int intermisMi, String summary, String contDetail, ArtFacilityDto theater) {
+    public ArtDetailDTO(String artId, String artNm, String artShowAge, String status, int orgPrice, int minPrice, String artStrDt, String artEndDt, String artRuntime, String intermisYn, int intermisMi, String summary, String contDetail, ArtFacilityDto theater) {
         this.artId = artId;
         this.artNm = artNm;
         this.artShowAge = artShowAge;
@@ -60,6 +62,7 @@ public class ArtDetailDTO {
         this.artStrDt = artStrDt;
         this.artEndDt = artEndDt;
         this.artRuntime = artRuntime;
+        this.intermisYn = intermisYn;
         this.intermisMi = intermisMi;
         this.summary = summary;
         this.contDetail = contDetail;
@@ -77,6 +80,7 @@ public class ArtDetailDTO {
                                 artTime.getArtStrDt(),
                                 artTime.getArtEndDt(),
                                 artDetail.getArtRuntime(),
+                                artDetail.getIntermisYn(),
                                 artDetail.getIntermisMi(),
                                 artDetail.getSummary(),
                                 artDetail.getContDetail(),
