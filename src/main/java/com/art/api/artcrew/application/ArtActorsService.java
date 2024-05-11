@@ -4,6 +4,7 @@ package com.art.api.artcrew.application;
 import com.art.api.artcrew.domain.dto.PeopleDTO;
 import com.art.api.artcrew.domain.entity.ArtActors;
 import com.art.api.artcrew.infrastructure.ArtActorsRepository;
+import com.art.api.core.exception.ItemNotFoundException;
 import com.art.api.product.domain.entity.ArtDetail;
 import com.art.api.product.domain.entity.ArtList;
 import com.art.api.product.infrastructure.ArtDetailRepository;
@@ -26,7 +27,7 @@ public class ArtActorsService {
     public List<ArtActors> retrieveSameNameActorList(String name) {
         Optional<List<ArtActors>> actorList = actorRepository.findAllByActorsNm(name);
         if (actorList.isEmpty()) {
-
+            return null;
         }
         return actorList.get();
     }
@@ -36,7 +37,7 @@ public class ArtActorsService {
     public ArtActors retrieveActor(int actorId) {
         Optional<ArtActors> actor = actorRepository.findByArtActorsId(actorId);
         if (actor.isEmpty()) {
-
+            return null;
         }
         return actor.get();
 
@@ -46,20 +47,9 @@ public class ArtActorsService {
     public PeopleDTO retrievePeople(String artId) {
         Optional<ArtDetail> byArtId = detailRepository.findByArtId(artId);
         if (byArtId.isEmpty()) {
-
+            return null;
         }
         PeopleDTO dto = PeopleDTO.convertEntityToDto(byArtId.get());
-
-        Optional<ArtList> art = listRepository.findByArtId(artId);
-        if(art.isEmpty()) {
-
-        }
-        Optional<List<ArtActors>> actorList = actorRepository.findAllByArtList(art.get());
-        if (actorList.isPresent()) {
-            for (ArtActors artActors : actorList.get()) {
-                dto.getActors().add(artActors);
-            }
-        }
         return dto;
     }
 

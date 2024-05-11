@@ -1,6 +1,7 @@
 package com.art.api.common.domain.entity;
 
 
+import com.art.api.product.domain.entity.Theme;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -15,7 +16,7 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 @Comment("지역코드 : 법정동코드를 사용함.")
 @Table(name = "TB_ART_AREA")
-public class ArtArea {
+public class ArtArea implements Comparable<ArtArea>{
 
     @Id
     @Column(length = 20, name = "AREA_CODE")
@@ -26,5 +27,14 @@ public class ArtArea {
     @Column(length = 100, name = "AREA_NM")
     @Comment("지역명")
     private String areaNm;
+
+    @Column(name = "AREA_ORD_NO")
+    @Comment("지역순서")
+    private int areaOrdNo;
+
+    @Override
+    public int compareTo(ArtArea o) {
+        return this.areaOrdNo - o.areaOrdNo;
+    }
 
 }

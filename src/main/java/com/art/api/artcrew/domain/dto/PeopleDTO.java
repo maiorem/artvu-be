@@ -24,18 +24,19 @@ public class PeopleDTO {
 
     private String artStaff;
 
-    private List<ArtActors> actors = new ArrayList<>();
+    private String artActor;
 
     @QueryProjection
-    public PeopleDTO(String prodCompNm, String agencyNm, String sponsorNm, String organizerNm, String artStaff) {
+    public PeopleDTO(String prodCompNm, String agencyNm, String sponsorNm, String organizerNm, String artStaff, String artActor) {
         this.prodCompNm = prodCompNm;
         this.agencyNm = agencyNm;
         this.sponsorNm = sponsorNm;
         this.organizerNm = organizerNm;
         this.artStaff = artStaff;
+        this.artActor = artActor;
     }
 
     public static PeopleDTO convertEntityToDto(ArtDetail artDetail) {
-        return new PeopleDTO(artDetail.getProdCompNm(), artDetail.getAgencyNm(), artDetail.getSponsorNm(), artDetail.getOrganizerNm(), artDetail.getArtStaff());
+        return new PeopleDTO(artDetail.getProdCompNm(), artDetail.getAgencyNm(), artDetail.getSponsorNm(), artDetail.getOrganizerNm(), artDetail.getArtStaff(), artDetail.getArtActor());
     }
 }

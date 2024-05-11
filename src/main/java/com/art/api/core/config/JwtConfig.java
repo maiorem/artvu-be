@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class JwtConfig {
 
-    private final String SECRET = "fdsfhsdkjfhsdjkfshkjvbnckjvhsudshosidf2312dsfjf";
+    private final String SECRET = "fdsfhsdkjfhsdjkfs324242hkjvbnckjvhsu";
 
     @Bean
     public AuthTokenProvider jwtProvider() {

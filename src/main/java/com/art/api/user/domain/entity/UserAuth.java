@@ -3,10 +3,7 @@ package com.art.api.user.domain.entity;
 import com.art.api.core.entity.BaseEntity;
 import com.art.api.user.domain.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -14,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDateTime;
 
-@Getter
+@Getter @Setter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -34,7 +31,6 @@ public class UserAuth {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-
     @Column(length = 1, name = "PRIVACY_AGRE_YN")
     @Comment("개인정보동의여부")
     private String privacyAgreYn;
@@ -51,18 +47,19 @@ public class UserAuth {
     @Comment("생년월일(예시:20240314)")
     private String birthdayDt;
 
-
     @Column(length = 1, name = "SEX")
     @Comment("성별(M,F)")
-    private String sex;
+    @Enumerated(EnumType.STRING)
+    private Gender sex;
 
     @Column(length = 100, name = "JOB_NM")
     @Comment("직업")
     private String jobNm;
 
     @Column(length = 20, name = "NATIONAL_TYPE")
-    @Comment("내외국인구분(내국인:NATIVE, 외국인:NON-NATIVE)")
-    private String nationalType;
+    @Comment("내외국인구분(내국인:NATIVE, 외국인:FOREIGNER)")
+    @Enumerated(EnumType.STRING)
+    private NationalType nationalType;
 
 
     @Column(name = "AUTH_DT")

@@ -47,7 +47,7 @@ public class DiscoveryDTO {
     }
 
     public static DiscoveryDTO convertEntityToDto(ArtList artList, ArtMovie movie) {
-        return new DiscoveryDTO(artList.getArtNm(), "15", movie.getDiscoverTitl(), movie.getDiscoverCont(), movie.getMvUrl());
+        return new DiscoveryDTO(artList.getArtNm(), artList.getArtShowAge(), movie.getDiscoverTitl(), movie.getDiscoverCont(), movie.getMvUrl());
     }
 
 

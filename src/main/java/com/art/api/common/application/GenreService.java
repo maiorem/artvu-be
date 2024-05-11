@@ -5,6 +5,7 @@ import com.art.api.common.infrastructure.GenreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -14,7 +15,9 @@ public class GenreService {
     private final GenreRepository genreRepository;
 
     public List<GenreList> genreList() {
-        return genreRepository.findAll();
+        List<GenreList> list = genreRepository.findAll();
+        Collections.sort(list);
+        return list;
     }
 
 }
