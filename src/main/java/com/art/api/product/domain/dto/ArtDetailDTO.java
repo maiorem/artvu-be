@@ -1,7 +1,6 @@
 package com.art.api.product.domain.dto;
 
 import com.art.api.common.domain.entity.GenreList;
-import com.art.api.facility.domain.entity.ArtFacDetail;
 import com.art.api.product.domain.entity.ArtDetail;
 import com.art.api.product.domain.entity.ArtImg;
 import com.art.api.product.domain.entity.ArtList;
@@ -38,58 +37,54 @@ public class ArtDetailDTO {
 
     private String artEndDt;
 
+    private String intermisYn;
+
     private int intermisMi;
 
     private String summary;
 
     private String contDetail;
 
-    private String artFacId;
-
-    private String cityNm;
-
-    private String artFacNm;
+    private ArtFacilityDto theater;
 
     private List<ArtImg> artImgList = new ArrayList<>();
 
     private List<GenreList> genreList = new ArrayList<>();
 
     @QueryProjection
-    public ArtDetailDTO(String artId, String artNm, String artShowAge, String status, int orgPrice, int minPrice, String artRuntime, String artStrDt, String artEndDt, int intermisMi, String summary, String contDetail, String artFacId, String cityNm, String artFacNm) {
+    public ArtDetailDTO(String artId, String artNm, String artShowAge, String status, int orgPrice, int minPrice, String artStrDt, String artEndDt, String artRuntime, String intermisYn, int intermisMi, String summary, String contDetail, ArtFacilityDto theater) {
         this.artId = artId;
         this.artNm = artNm;
         this.artShowAge = artShowAge;
         this.status = status;
         this.orgPrice = orgPrice;
         this.minPrice = minPrice;
-        this.artRuntime = artRuntime;
         this.artStrDt = artStrDt;
         this.artEndDt = artEndDt;
+        this.artRuntime = artRuntime;
+        this.intermisYn = intermisYn;
         this.intermisMi = intermisMi;
         this.summary = summary;
         this.contDetail = contDetail;
-        this.artFacId = artFacId;
-        this.cityNm = cityNm;
-        this.artFacNm = artFacNm;
+        this.theater = theater;
     }
 
-    public static ArtDetailDTO convertEntityToDto(ArtList artList, ArtDetail artDetail, ArtTime artTime, ArtFacDetail artFacDetail){
+    public static ArtDetailDTO convertEntityToDto(ArtList artList, ArtDetail artDetail, ArtTime artTime){
 
         return new ArtDetailDTO(artList.getArtId(),
                                 artList.getArtNm(),
-                                artDetail.getArtShowAge(),
+                                artList.getArtShowAge(),
                                 artList.getStatus(),
                                 artList.getOrgPrice(),
                                 artList.getMinPrice(),
-                                artTime.getRunTime(),
                                 artTime.getArtStrDt(),
                                 artTime.getArtEndDt(),
+                                artDetail.getArtRuntime(),
+                                artDetail.getIntermisYn(),
                                 artDetail.getIntermisMi(),
                                 artDetail.getSummary(),
                                 artDetail.getContDetail(),
-                                artFacDetail.getArtFacId(),
-                                artFacDetail.getCityNm(),
-                                artFacDetail.getArtFacNm());
+                                ArtFacilityDto.of(artList.getArtFacId()));
     }
 
 }

@@ -2,6 +2,7 @@ package com.art.api.product.domain.entity;
 
 
 import com.art.api.core.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
@@ -22,12 +23,14 @@ public class ArtImg  extends BaseEntity {
 
     @Column(length = 50, name = "CLS_CODE")
     @Comment("용도구분(포스터,소개,좌석)")
+    @Enumerated(EnumType.STRING)
     private ClsCode clsCode;
 
     @Column(length = 2000, name = "IMG_URL")
     @Comment("이미지URL")
     private String imgUrl;
 
+    @JsonIgnore
     @JoinColumn(name = "ART_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private ArtList artList;

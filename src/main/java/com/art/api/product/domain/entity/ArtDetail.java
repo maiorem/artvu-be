@@ -27,13 +27,14 @@ public class ArtDetail {
     @Comment("공연제작진")
     private String artStaff;
 
+    @Column(length = 200, name = "ART_ACTOR")
+    @Comment("공연출연진")
+    private String artActor;
+
     @Column(length = 50, name = "ART_RUNTIME")
     @Comment("런타임")
     private String artRuntime;
 
-    @Column(length = 50, name = "ART_SHOW_AGE")
-    @Comment("공연관람연령")
-    private String artShowAge;
 
     @Column(length = 100, name = "PROD_COMP_NM")
     @Comment("제작사")
@@ -51,7 +52,7 @@ public class ArtDetail {
     @Comment("주관")
     private String organizerNm;
 
-    @Column(length = 4000, name = "SUMMARY")
+    @Column(length = 4000, name = "ART_SUMMARY")
     @Comment("줄거리")
     private String summary;
 

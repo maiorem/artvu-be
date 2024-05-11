@@ -1,6 +1,7 @@
 package com.art.api.product.infrastructure;
 
 
+import com.art.api.common.domain.entity.GenreList;
 import com.art.api.product.domain.entity.ArtList;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,8 +14,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static com.art.api.product.domain.entity.QArtList.artList;
-import static com.art.api.common.domain.entity.QGenreList.genreList;
-import static com.art.api.common.domain.entity.QArtArea.artArea;
+import static com.art.api.product.domain.entity.QArtGenreMppg.artGenreMppg;
 
 
 @RequiredArgsConstructor
@@ -29,19 +29,23 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
                 .fetchOne();
     }
 
-    private BooleanBuilder isExistKeyword(String genre, String local, String search) {
+    private BooleanBuilder isExistKeyword(List<String> genre, String local, String search) {
         BooleanBuilder builder = new BooleanBuilder();
-        if(!StringUtils.isEmpty(local)) builder.and(artArea.areaNm.eq(local));
+        if(!StringUtils.isEmpty(local)) builder.and(artList.areaCode.areaNm.eq(local));
         if(!StringUtils.isEmpty(search)) builder.and(artList.artNm.contains(search)).or(artList.copyText.contains(search));
-        if(!StringUtils.isEmpty(genre)) builder.and(genreList.artGenreNm.eq(genre));
+        if(genre != null && !genre.isEmpty()) {
+            builder.and(artGenreMppg.genreList.artGenreNm.in(genre));
+        }
         return builder;
     }
 
     @Override
-    public Page<ArtList> findSearchResult(Pageable pageable, String genre, String local, String search) {
+    public Page<ArtList> findSearchResult(Pageable pageable, List<String> genre, String local, String search) {
 
         List<ArtList> result = jpaQueryFactory
                 .selectFrom(artList)
+                .leftJoin(artList.artGenreMppgs, artGenreMppg)
+                .on(artList.artId.eq(artGenreMppg.artList.artId))
                 .where( isExistKeyword(genre, local, search) )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -50,4 +54,16 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
 
         return new PageImpl<>(result, pageable, count);
     }
+
+    @Override
+    public List<ArtList> findSuggestList(List<GenreList> genreList) {
+        return jpaQueryFactory
+                .selectFrom(artList)
+                .leftJoin(artList.artGenreMppgs, artGenreMppg)
+                .on(artList.artId.eq(artGenreMppg.artList.artId))
+                .where(artGenreMppg.genreList.in(genreList))
+                .limit(6)
+                .fetch();
+    }
+
 }
