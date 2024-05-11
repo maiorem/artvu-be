@@ -18,26 +18,27 @@ public class ArtListDTO {
 
     private String artId;
     private String artNm;
-
     private String copyText;
-
     private String artCateNm;
+    private String artShowAge;
+    private String artSaleYn;
     private String area;
-
     private String posterUrl;
     private List<GenreList> genreList = new ArrayList<>();
 
 
     @QueryProjection
-    public ArtListDTO(String artId, String artNm, String copyText, String artCateNm){
+    public ArtListDTO(String artId, String artNm, String copyText, String artCateNm, String artShowAge, String artSaleYn){
         this.artId = artId;
         this.artNm = artNm;
         this.copyText = copyText;
         this.artCateNm = artCateNm;
+        this.artShowAge = artShowAge;
+        this.artSaleYn = artSaleYn;
     }
 
     public static ArtListDTO convertEntityToDto(ArtList artList) {
-        return new ArtListDTO(artList.getArtId(), artList.getArtNm(), artList.getCopyText(), artList.getArtCateNm());
+        return new ArtListDTO(artList.getArtId(), artList.getArtNm(), artList.getCopyText(), artList.getArtCateNm(), artList.getArtShowAge(), artList.getArtSaleYn());
     }
 
 

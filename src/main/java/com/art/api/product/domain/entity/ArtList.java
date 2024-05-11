@@ -65,6 +65,11 @@ public class ArtList {
     @Comment("공연 카테고리")
     private String artCateNm;
 
+    @Column(length = 1, name = "ART_SALE_YN")
+    @Comment("상품판매여부")
+    @ColumnDefault("N")
+    private String artSaleYn;
+
     @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "artList")

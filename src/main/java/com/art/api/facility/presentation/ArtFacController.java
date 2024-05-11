@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/performs")
+@RequestMapping("/api/performs")
 public class ArtFacController {
 
     private final ArtFacService artFacService;
