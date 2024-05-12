@@ -12,7 +12,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 import static com.art.api.product.domain.entity.QArtList.artList;
 import static com.art.api.product.domain.entity.QArtGenreMppg.artGenreMppg;
 
@@ -51,7 +54,9 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
                 .where( isExistKeyword(genre, local, search) )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch();
+                .groupBy(artList.artId)
+                .fetch()
+                .stream().distinct().collect(Collectors.toList());
 
         Long count = jpaQueryFactory.
                 select(artList.artId.countDistinct())
