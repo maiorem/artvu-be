@@ -58,7 +58,7 @@ public class ArtService {
             if (item.getAreaCode() != null) {
                 dto.setArea(item.getAreaCode().getAreaNm());
             }
-            dto.setPosterUrl(posterUrl);
+            dto.setPosterImgUrl(posterUrl);
             mappingList.ifPresent(artGenreMppgs -> {
                 for (ArtGenreMppg genre : artGenreMppgs) {
                     dto.getGenreList().add(genreRepository.findByArtGenreId(genre.getGenreList().getArtGenreId()));
@@ -85,7 +85,7 @@ public class ArtService {
             if (item.getAreaCode() != null) {
                 dto.setArea(item.getAreaCode().getAreaNm());
             }
-            dto.setPosterUrl(posterUrl);
+            dto.setPosterImgUrl(posterUrl);
             mappingList.ifPresent(artGenreMppgs -> {
                 for (ArtGenreMppg genre : artGenreMppgs) {
                     dto.getGenreList().add(genreRepository.findByArtGenreId(genre.getGenreList().getArtGenreId()));
