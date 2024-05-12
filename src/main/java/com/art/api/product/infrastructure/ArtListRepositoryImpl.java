@@ -54,7 +54,7 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
                 .fetch();
 
         Long count = jpaQueryFactory.
-                select(artList.count())
+                select(artList.artId.countDistinct())
                 .from(artList)
                 .leftJoin(artList.artGenreMppgs, artGenreMppg)
                 .on(artList.artId.eq(artGenreMppg.artList.artId))
