@@ -12,7 +12,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 import static com.art.api.product.domain.entity.QArtList.artList;
 import static com.art.api.product.domain.entity.QArtGenreMppg.artGenreMppg;
 
@@ -32,7 +35,9 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
     private BooleanBuilder isExistKeyword(List<String> genre, String local, String search) {
         BooleanBuilder builder = new BooleanBuilder();
         if(!StringUtils.isEmpty(local)) builder.and(artList.areaCode.areaNm.eq(local));
-        if(!StringUtils.isEmpty(search)) builder.and(artList.artNm.contains(search)).or(artList.copyText.contains(search));
+        if(!StringUtils.isEmpty(search)) builder.and(
+                artList.artNm.contains(search).or(artList.copyText.contains(search))
+        );
         if(genre != null && !genre.isEmpty()) {
             builder.and(artGenreMppg.genreList.artGenreNm.in(genre));
         }
@@ -49,8 +54,17 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
                 .where( isExistKeyword(genre, local, search) )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .fetch();
-        Long count = artListCount();
+                .groupBy(artList.artId)
+                .fetch()
+                .stream().distinct().collect(Collectors.toList());
+
+        Long count = jpaQueryFactory.
+                select(artList.artId.countDistinct())
+                .from(artList)
+                .leftJoin(artList.artGenreMppgs, artGenreMppg)
+                .on(artList.artId.eq(artGenreMppg.artList.artId))
+                .where( isExistKeyword(genre, local, search) )
+                .fetchOne();
 
         return new PageImpl<>(result, pageable, count);
     }
