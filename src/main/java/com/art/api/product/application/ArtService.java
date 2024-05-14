@@ -58,7 +58,7 @@ public class ArtService {
             if (item.getAreaCode() != null) {
                 dto.setArea(item.getAreaCode().getAreaNm());
             }
-            dto.setPosterUrl(posterUrl);
+            dto.setPosterImgUrl(posterUrl);
             mappingList.ifPresent(artGenreMppgs -> {
                 for (ArtGenreMppg genre : artGenreMppgs) {
                     dto.getGenreList().add(genreRepository.findByArtGenreId(genre.getGenreList().getArtGenreId()));
@@ -67,7 +67,7 @@ public class ArtService {
             list.add(dto);
         }
 
-        Page<ArtListDTO> result = new PageImpl<>(list, artList.getPageable(), artList.getSize());
+        Page<ArtListDTO> result = new PageImpl<>(list, artList.getPageable(), artList.getTotalElements());
         return result;
     }
 
@@ -85,7 +85,7 @@ public class ArtService {
             if (item.getAreaCode() != null) {
                 dto.setArea(item.getAreaCode().getAreaNm());
             }
-            dto.setPosterUrl(posterUrl);
+            dto.setPosterImgUrl(posterUrl);
             mappingList.ifPresent(artGenreMppgs -> {
                 for (ArtGenreMppg genre : artGenreMppgs) {
                     dto.getGenreList().add(genreRepository.findByArtGenreId(genre.getGenreList().getArtGenreId()));
@@ -132,8 +132,9 @@ public class ArtService {
         for (Theme theme : themeList) {
             List<ThemeDTO> list = new ArrayList<>();
             Optional<List<ThemeHist>> themeHistList = themeHistRepository.findByTheme(theme);
-            themeHistList.ifPresent(themeHists -> {
-                for (ThemeHist themeHist : themeHists) {
+            if (themeHistList.isPresent()) {
+
+                for (ThemeHist themeHist : themeHistList.get()) {
                     Optional<ArtList> art = artListRepository.findByArtId(themeHist.getArtList().getArtId());
                     if (art.isEmpty()) {
                         throw new ItemNotFoundException();
@@ -147,7 +148,9 @@ public class ArtService {
                     dto.setPosterImgUrl(posterUrl);
                     list.add(dto);
                 }
-            });
+            } else {
+                return null;
+            }
             ThemeListDTO newListDto = ThemeListDTO.convertEntityToDto(theme);
             newListDto.setContents(list);
             dtoList.add(newListDto);

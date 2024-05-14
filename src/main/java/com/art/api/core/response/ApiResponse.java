@@ -67,7 +67,7 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> serverFail(Exception exception) {
         Map<String, String> map = new HashMap<>();
 
-        log.error("서버 에러 발생!!!", exception);
+        log.error("서버 에러 발생", exception);
 
         if(exception instanceof JDBCException) {
             map.put("서버 오류 메세지", "JDBC 관련 에러 발생");
