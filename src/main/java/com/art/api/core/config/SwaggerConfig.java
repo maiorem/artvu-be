@@ -20,7 +20,7 @@ public class SwaggerConfig {
                         .title("아트뷰 API")
                         .description("연극 플랫폼 아트뷰 API 명세서")
                         .version("1.0.0"))
-                .servers(List.of(new Server().url("https://backend.artvu.co.kr")))
+                .servers(List.of(new Server().url("https://devbackend.artvu.co.kr")))
                 .components(new Components()
                         .addSecuritySchemes("bearer-key",
                                 new io.swagger.v3.oas.models.security.SecurityScheme()
