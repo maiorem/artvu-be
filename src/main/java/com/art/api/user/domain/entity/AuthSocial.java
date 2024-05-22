@@ -45,4 +45,9 @@ public class AuthSocial extends BaseEntity {
     @Comment("리프레시 토큰")
     private String refreshToken;
 
+    public void updateToken(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+    }
+
 }
