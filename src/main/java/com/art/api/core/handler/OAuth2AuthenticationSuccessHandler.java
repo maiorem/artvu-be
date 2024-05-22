@@ -17,6 +17,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -33,6 +34,7 @@ import java.util.Optional;
 import static com.art.api.core.auth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 import static com.art.api.core.auth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository.REFRESH_TOKEN;
 
+@Slf4j
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
@@ -92,16 +94,17 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 new Date(now.getTime() + refreshTokenExpiry)
         );
 
-
         // DB 저장
         Optional<User> optionalUser = memberRepository.findByUserId(userInfo.getId());
         AuthSocial authSocial = authSocialRepository.findByUser(optionalUser.get());
         if (authSocial != null) {
-            authSocial.setRefreshToken(refreshToken.getToken());
+            authSocial.updateToken(accessToken.getToken(), refreshToken.getToken());
+            authSocialRepository.saveAndFlush(authSocial);
         } else {
             authSocial = AuthSocial.builder()
                     .user(optionalUser.get())
                     .socialJoinType(SocialJoinType.KAKAO)
+                    .accessToken(accessToken.getToken())
                     .refreshToken(refreshToken.getToken())
                     .build();
             authSocialRepository.saveAndFlush(authSocial);
