@@ -45,7 +45,7 @@ app:
     tokenExpiry: 1800000 # 30분
     refreshTokenExpiry: 604800000 # 7일
   oauth2:
-    authorized-redirect-uris: https://dev.artvu.co.kr/oauth/redirect
+    authorized-redirect-uris: https://stage.artvu.co.kr/oauth/redirect
 cors:
   allowed-headers: '*'
   max-age: 3600
