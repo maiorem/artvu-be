@@ -4,6 +4,8 @@ package com.art.api.product.application;
 import com.art.api.common.infrastructure.GenreRepository;
 import com.art.api.common.infrastructure.LocalRepository;
 import com.art.api.core.exception.ItemNotFoundException;
+import com.art.api.discover.domain.entity.ArtMovie;
+import com.art.api.discover.infrastructure.DiscoverRepository;
 import com.art.api.facility.infrastructure.ArtFacRepository;
 import com.art.api.product.domain.dto.ArtDetailDTO;
 import com.art.api.product.domain.dto.ArtListDTO;
@@ -38,6 +40,7 @@ public class ArtService {
     private final ArtFacRepository facilityRepository;
     private final ThemeHistRepository themeHistRepository;
     private final ThemeRepository themeRepository;
+    private final DiscoverRepository discoverRepository;
 
 
     public Page<ArtListDTO> retrieveArtList(Pageable pageable, List<String> genre, String local, String search) {
@@ -112,6 +115,15 @@ public class ArtService {
             return null;
         }
         ArtDetailDTO dto = ArtDetailDTO.convertEntityToDto(art.get(), detail.get(), time.get());
+
+        Optional<List<ArtMovie>> artMovieListOptinal = discoverRepository.findAllByArtlist(art.get());
+        artMovieListOptinal.ifPresent(artMovieList -> {
+            for (ArtMovie artMovie : artMovieList) {
+                if (artMovie.getMvUrl().contains("trailer")) {
+                    dto.setTrailerUrl(artMovie.getMvUrl());
+                }
+            }
+        });
 
         Optional<List<ArtImg>> artImgList = imgListRepository.findAllByArtList(art.get());
         artImgList.ifPresent(dto::setArtImgList);
