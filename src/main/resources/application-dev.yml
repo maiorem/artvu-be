@@ -4,6 +4,9 @@ spring:
     url: jdbc:mysql://100.100.30.52:23306/dartvu
     username: appartvu
     password: System01!!
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 20
 
   jpa:
     properties:
@@ -32,8 +35,8 @@ spring:
         registration:
           kakao:
             client-id: '8611cd3341ff998c7fddc8764cf1e43a'
-            client-secret: 'LDTWH1YBdFgOLrnKVrkBdobXxPMT0biH'
-            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            client-secret: 'HStQmeJF6qWaeX4SaWQNeY8tCQOB68qO'
+            redirect-uri: https://devbackend.artvu.co.kr/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post
             scope: account_email, profile_image, profile_nickname, gender
