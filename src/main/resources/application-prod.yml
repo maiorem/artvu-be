@@ -4,6 +4,9 @@ spring:
     url: jdbc:mariadb://100.100.30.153:23306/artvu
     username: appartvu
     password: Ra$5Je23
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 20
 
   jpa:
     properties:

@@ -4,6 +4,9 @@ spring:
     url: jdbc:mysql://100.100.30.52:23306/dartvu
     username: appartvu
     password: System01!!
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 20
 
   jpa:
     properties:
