@@ -3,6 +3,7 @@ package com.art.api.product.infrastructure;
 
 import com.art.api.common.domain.entity.GenreList;
 import com.art.api.product.domain.entity.ArtList;
+import com.art.api.user.domain.entity.SaveHist;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.micrometer.common.util.StringUtils;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,8 @@ import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 import static com.art.api.product.domain.entity.QArtList.artList;
 import static com.art.api.product.domain.entity.QArtGenreMppg.artGenreMppg;
+import static com.art.api.user.domain.entity.QSaveHist.saveHist;
+import static com.art.api.user.domain.entity.QUser.user;
 
 
 @RequiredArgsConstructor
@@ -64,6 +68,30 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
                 .leftJoin(artList.artGenreMppgs, artGenreMppg)
                 .on(artList.artId.eq(artGenreMppg.artList.artId))
                 .where( isExistKeyword(genre, local, search) )
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, count);
+    }
+
+    @Override
+    public Page<ArtList> findSaveResult(Pageable pageable, List<String> saveArtIdList) {
+
+        List<ArtList> result = jpaQueryFactory
+                .selectFrom(artList)
+                .leftJoin(saveHist)
+                .on(artList.artId.eq(saveHist.artList.artId))
+                .where(artList.artId.in(saveArtIdList))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .groupBy(artList.artId)
+                .fetch();
+
+        Long count = jpaQueryFactory.
+                select(artList.artId.countDistinct())
+                .from(artList)
+                .leftJoin(saveHist)
+                .on(artList.artId.eq(saveHist.artList.artId))
+                .where(artList.artId.in(saveArtIdList))
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, count);
