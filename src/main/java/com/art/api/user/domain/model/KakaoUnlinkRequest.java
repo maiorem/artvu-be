@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter @Setter
 public class KakaoUnlinkRequest {
     private String target_id_type;
-    private Long tartget_id;
+    private String tartget_id;
 }
