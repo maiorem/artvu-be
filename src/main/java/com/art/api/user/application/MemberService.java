@@ -145,17 +145,15 @@ public class MemberService {
 
     // 유저가 저장한 연극 목록 페이징
     public Page<ArtList> retrieveMySaveList(Pageable pagable, User user) {
-        Long count = countSaveHistByUser(user);
         List<SaveHist> saveHistList = saveHistRepository.findByUser(user);
         if(saveHistList == null) {
             return null;
         }
-        List<ArtList> list = new ArrayList<>();
+        List<String> saveArtIdList = new ArrayList<>();
         for (SaveHist saveHist : saveHistList) {
-            Optional<ArtList> artOptional = artListRepository.findByArtId(saveHist.getArtList().getArtId());
-            list.add(artOptional.get());
+            saveArtIdList.add(saveHist.getArtList().getArtId());
         }
-        Page<ArtList> artListPage = new PageImpl<>(list, pagable, count);
+        Page<ArtList> artListPage = artListRepository.findSaveResult(pagable, saveArtIdList);
         return artListPage;
     }
 
