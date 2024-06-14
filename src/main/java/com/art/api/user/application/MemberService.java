@@ -1,6 +1,7 @@
 package com.art.api.user.application;
 
 import com.art.api.common.domain.entity.GenreList;
+import com.art.api.core.exception.KakaoUnlinkFailureException;
 import com.art.api.product.domain.entity.ArtGenreMppg;
 import com.art.api.product.domain.entity.ArtList;
 import com.art.api.product.infrastructure.ArtListRepository;
@@ -18,9 +19,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.Disposable;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 @Slf4j
 @Service
@@ -59,30 +66,30 @@ public class MemberService {
     @Transactional
     public void deleteUser(User user) {
 
-        userAuthRepository.deleteByUser(user);
-        authSocialRepository.deleteByUser(user);
-        profileRepository.deleteByUser(user);
-        memberRepository.deleteByUserId(user.getUserId());
-
-
         //카카오 연결 해제
         WebClient client = WebClient.builder()
                 .baseUrl("https://kapi.kakao.com/v1/user")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, String.valueOf(MediaType.APPLICATION_FORM_URLENCODED))
-                .defaultHeader("Authorization", "KakaoAK" + " " + kakaoAdminKey)
+                .defaultHeader("Authorization", "KakaoAK " + kakaoAdminKey)
                 .build();
 
-        KakaoUnlinkRequest request = new KakaoUnlinkRequest();
-        request.setTarget_id_type("user_id");
-        request.setTartget_id(Long.parseLong(user.getUserId()));
+        MultiValueMap<String, String> reqeust = new LinkedMultiValueMap<>();
+        reqeust.add("target_id_type", "user_id");
+        reqeust.add("target_id", user.getUserId());
 
-        client.post()
+        Mono<String> response = client.post()
                 .uri("/unlink")
-                .bodyValue(request)
+                .body(BodyInserters.fromFormData(reqeust))
                 .retrieve()
-                .bodyToMono(String.class)
-                .onErrorReturn("카카오 연결 끊기 실패")
-                .subscribe(log::error);
+                .bodyToMono(String.class);
+
+        log.info("Kakao unlink : {}", response.block());
+
+        saveHistRepository.deleteByUser(user);
+        profileRepository.deleteByUser(user);
+        authSocialRepository.deleteByUser(user);
+        userAuthRepository.deleteByUser(user);
+        memberRepository.deleteByUserId(user.getUserId());
 
     }
 

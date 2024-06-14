@@ -18,4 +18,6 @@ public interface SaveHistRepository extends JpaRepository<SaveHist, Integer> {
     Long countByUser(User user);
 
     List<SaveHist> findByUser(User user);
+
+    void deleteByUser(User user);
 }
