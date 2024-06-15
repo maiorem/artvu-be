@@ -17,6 +17,7 @@ import com.art.api.user.domain.model.MypageResponse;
 import com.art.api.user.domain.model.PreferGenreResponse;
 import com.art.api.user.domain.model.UpdateUserInfoRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -104,9 +106,10 @@ public class MemberController {
 
     @GetMapping("/user/mylist")
     @Operation(summary = "저장한 연극 목록")
-    public ApiResponse<?> saveList(@PageableDefault(size = 6, sort = "artId", direction = Sort.Direction.DESC) Pageable pagable) {
-        User user = securityUserInfo();
-        Page<ArtListDTO> artList = artService.convertArtList(memberService.retrieveMySaveList(pagable, user));
+    public ApiResponse<?> saveList(@PageableDefault(size = 6, sort = "artId", direction = Sort.Direction.DESC) Pageable pagable,
+                                   @AuthenticationPrincipal @Parameter(hidden = true) org.springframework.security.core.userdetails.User user) {
+        User member = securityUserInfo();
+        Page<ArtListDTO> artList = artService.convertArtList(memberService.retrieveMySaveList(pagable, member), user);
         if(artList == null) {
             return ApiResponse.notExistData();
         }
@@ -143,7 +146,7 @@ public class MemberController {
         if (count < 3) {
             return ApiResponse.notEnoughData();
         } else {
-            List<ArtListDTO> artList = artService.convertArtList(memberService.retrieveListSuggestList(user));
+            List<ArtListDTO> artList = artService.convertArtList(memberService.retrieveListSuggestList(user), user);
             if (artList == null) {
                 return ApiResponse.notExistData();
             }

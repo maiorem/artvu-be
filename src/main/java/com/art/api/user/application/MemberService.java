@@ -1,6 +1,7 @@
 package com.art.api.user.application;
 
 import com.art.api.common.domain.entity.GenreList;
+import com.art.api.core.exception.ClientUserNotFoundException;
 import com.art.api.product.domain.entity.ArtGenreMppg;
 import com.art.api.product.domain.entity.ArtList;
 import com.art.api.product.infrastructure.ArtListRepository;
@@ -199,5 +200,13 @@ public class MemberService {
         }
         List<ArtList> suggestList = artListRepository.findSuggestList(genreList);
         return suggestList;
+    }
+
+    public User findByUserId(String userId) {
+        Optional<User> byUserId = memberRepository.findByUserId(userId);
+        if (byUserId.isEmpty()) {
+            throw new ClientUserNotFoundException();
+        }
+        return byUserId.get();
     }
 }
