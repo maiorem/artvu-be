@@ -21,20 +21,35 @@ public class ThemeDTO {
     private String artNm;
 
     private String copyText;
+    private String artCateNm;
+    private String artShowAge;
+    private String artSaleYn;
+    private boolean isSaved;
 
     private String posterImgUrl;
 
     @QueryProjection
-    public ThemeDTO(String artId, int themeOrdNo, String themeNm, String artNm, String copyText) {
+    public ThemeDTO(String artId, int themeOrdNo, String themeNm, String artNm, String copyText, String artCateNm, String artShowAge, String artSaleYn) {
         this.artId = artId;
         this.themeOrdNo = themeOrdNo;
         this.themeNm = themeNm;
         this.artNm = artNm;
         this.copyText = copyText;
+        this.artCateNm = artCateNm;
+        this.artShowAge = artShowAge;
+        this.artSaleYn = artSaleYn;
     }
 
     public static ThemeDTO convertEntityToDto(ArtList artList, Theme theme) {
-        return new ThemeDTO(artList.getArtId(), theme.getThemeOrdNo(), theme.getThemeNm(), artList.getArtNm(), artList.getCopyText());
+        return new ThemeDTO(
+                artList.getArtId(),
+                theme.getThemeOrdNo(),
+                theme.getThemeNm(),
+                artList.getArtNm(),
+                artList.getCopyText(),
+                artList.getArtCateNm(),
+                artList.getArtShowAge(),
+                artList.getArtSaleYn());
     }
 
 }
