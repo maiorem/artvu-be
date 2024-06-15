@@ -14,17 +14,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.xml.Jaxb2XmlDecoder;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
@@ -66,31 +64,28 @@ public class MemberService {
     public void deleteUser(User user) {
 
         //카카오 연결 해제
-        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
-                .codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs()
-                        .jaxb2Decoder(new Jaxb2XmlDecoder()))
-                .build();
+        List<HttpMessageConverter<?>> converters = new ArrayList<>();
+        converters.add(new FormHttpMessageConverter());
+        converters.add(new StringHttpMessageConverter());
 
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setMessageConverters(converters);
 
-        WebClient client = WebClient.builder()
-                .baseUrl("https://kapi.kakao.com/v1/user")
-                .exchangeStrategies(exchangeStrategies)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, String.valueOf(MediaType.APPLICATION_FORM_URLENCODED))
-                .defaultHeader("Authorization", "KakaoAK " + kakaoAdminKey)
-                .build();
+        //header 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+        headers.add("Authorization", "KakaoAK " + kakaoAdminKey);
 
-        MultiValueMap<String, String> reqeust = new LinkedMultiValueMap<>();
-        reqeust.add("target_id_type", "user_id");
-        reqeust.add("target_id", user.getUserId());
+        //parameter 세팅
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("target_id_type", "user_id");
+        map.add("target_id", user.getUserId());
 
-        Mono<String> response = client.post()
-                .uri("/unlink")
-                .body(BodyInserters.fromFormData(reqeust))
-                .retrieve()
-                .bodyToMono(String.class)
-                .log();
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
-        log.info("Kakao Unlink : {}", response.block());
+        String json = restTemplate.postForObject("https://kapi.kakao.com/v1/user/unlink", request, String.class);
+        log.info("----------------- 응답 결과 -------------------");
+        log.info(json);
 
         saveHistRepository.deleteByUser(user);
         profileRepository.deleteByUser(user);
@@ -209,4 +204,5 @@ public class MemberService {
         }
         return byUserId.get();
     }
+
 }
