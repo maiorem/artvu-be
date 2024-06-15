@@ -1,12 +1,10 @@
 package com.art.api.user.application;
 
 import com.art.api.common.domain.entity.GenreList;
-import com.art.api.core.exception.KakaoUnlinkFailureException;
 import com.art.api.product.domain.entity.ArtGenreMppg;
 import com.art.api.product.domain.entity.ArtList;
 import com.art.api.product.infrastructure.ArtListRepository;
 import com.art.api.user.domain.entity.*;
-import com.art.api.user.domain.model.KakaoUnlinkRequest;
 import com.art.api.user.domain.model.UpdateUserInfoRequest;
 import com.art.api.user.infrastructure.repository.*;
 import jakarta.transaction.Transactional;
@@ -14,20 +12,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.codec.xml.Jaxb2XmlDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 @Slf4j
 @Service
@@ -67,8 +65,15 @@ public class MemberService {
     public void deleteUser(User user) {
 
         //카카오 연결 해제
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+                .codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs()
+                        .jaxb2Decoder(new Jaxb2XmlDecoder()))
+                .build();
+
+
         WebClient client = WebClient.builder()
                 .baseUrl("https://kapi.kakao.com/v1/user")
+                .exchangeStrategies(exchangeStrategies)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, String.valueOf(MediaType.APPLICATION_FORM_URLENCODED))
                 .defaultHeader("Authorization", "KakaoAK " + kakaoAdminKey)
                 .build();
@@ -81,9 +86,10 @@ public class MemberService {
                 .uri("/unlink")
                 .body(BodyInserters.fromFormData(reqeust))
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(String.class)
+                .log();
 
-        log.info("Kakao unlink : {}", response.block());
+        log.info("Kakao Unlink : {}", response.block());
 
         saveHistRepository.deleteByUser(user);
         profileRepository.deleteByUser(user);
