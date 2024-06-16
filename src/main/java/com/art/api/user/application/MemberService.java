@@ -60,6 +60,39 @@ public class MemberService {
         return profileRepository.findByUser(user);
     }
 
+
+
+    public void logout(String userId) {
+        Optional<User> byUserId = memberRepository.findByUserId(userId);
+        if (byUserId.isEmpty()) {
+            throw new ClientUserNotFoundException();
+        }
+        //카카오 로그아웃 (토큰 만료)
+        List<HttpMessageConverter<?>> converters = new ArrayList<>();
+        converters.add(new FormHttpMessageConverter());
+        converters.add(new StringHttpMessageConverter());
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setMessageConverters(converters);
+
+        //header 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+        headers.add("Authorization", "KakaoAK " + kakaoAdminKey);
+
+        //parameter 세팅
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("target_id_type", "user_id");
+        map.add("target_id", userId);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+
+        String json = restTemplate.postForObject("https://kapi.kakao.com/v1/user/logout", request, String.class);
+        log.info("----------------- 응답 결과 -------------------");
+        log.info(json);
+
+    }
+
     @Transactional
     public void deleteUser(User user) {
 
@@ -94,6 +127,7 @@ public class MemberService {
         memberRepository.deleteByUserId(user.getUserId());
 
     }
+
 
 
     @Transactional
