@@ -3,12 +3,16 @@ package com.art.api.core.utils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.SerializationUtils;
 
 import java.util.Base64;
 import java.util.Optional;
 
 public class CookieUtil {
+
+    @Value("${spring.open-api.domain}")
+    private static String domain;
 
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
@@ -25,9 +29,10 @@ public class CookieUtil {
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
+        cookie.setDomain(domain);
         cookie.setHttpOnly(true);
         cookie.setMaxAge(maxAge);
-
+        cookie.setSecure(true);
         response.addCookie(cookie);
     }
 
