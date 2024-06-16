@@ -50,6 +50,8 @@ public class MemberController {
     }
 
 
+
+
     @GetMapping("/mypage")
     @Operation(summary = "회원정보", description = "아이디/이름/닉네임/프로필이미지/이메일/성별/저장한 연극 수")
     public ApiResponse<?> getMyPageInfo() {
@@ -69,6 +71,14 @@ public class MemberController {
         MypageResponse response = MypageResponse.of(clientUser.getUserId(), clientUser.getUserName(), profile.getNickNm(), authSocial.getProfileImgUrl(), userAuth.getEmail(), userAuth.getSex(), memberService.countSaveHistByUser(clientUser));
         return ApiResponse.success("data", response);
     }
+
+    @PostMapping("/logout")
+    @Operation(summary = "회원 로그아웃")
+    public ApiResponse logout(@AuthenticationPrincipal @Parameter(hidden = true) org.springframework.security.core.userdetails.User user) {
+        memberService.logout(user.getUsername());
+        return ApiResponse.success("data", "로그아웃이 정상적으로 완료되었습니다.");
+    }
+
 
     @PatchMapping("/user")
     @Operation(summary = "회원정보 재입력", description = "회원 필수 입력 정보 업데이트")
