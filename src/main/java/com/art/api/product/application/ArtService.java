@@ -13,11 +13,15 @@ import com.art.api.product.domain.dto.ThemeDTO;
 import com.art.api.product.domain.dto.ThemeListDTO;
 import com.art.api.product.domain.entity.*;
 import com.art.api.product.infrastructure.*;
+import com.art.api.user.domain.entity.SaveHist;
+import com.art.api.user.infrastructure.repository.MemberRepository;
+import com.art.api.user.infrastructure.repository.SaveHistRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,14 +45,16 @@ public class ArtService {
     private final ThemeHistRepository themeHistRepository;
     private final ThemeRepository themeRepository;
     private final DiscoverRepository discoverRepository;
+    private final MemberRepository memberRepository;
+    private final SaveHistRepository saveHistRepository;
 
 
-    public Page<ArtListDTO> retrieveArtList(Pageable pageable, List<String> genre, String local, String search) {
-        Page<ArtListDTO> artList = convertArtList(artListRepository.findSearchResult(pageable, genre, local, search));
+    public Page<ArtListDTO> retrieveArtList(Pageable pageable, List<String> genre, String local, String search, User user) {
+        Page<ArtListDTO> artList = convertArtList(artListRepository.findSearchResult(pageable, genre, local, search), user);
         return artList;
     }
 
-    public Page<ArtListDTO> convertArtList(Page<ArtList> artList) {
+    public Page<ArtListDTO> convertArtList(Page<ArtList> artList, User user) {
         List<ArtListDTO> list = new ArrayList<>();
         for (ArtList item : artList) {
             ArtListDTO dto = ArtListDTO.convertEntityToDto(item);
@@ -67,6 +73,17 @@ public class ArtService {
                     dto.getGenreList().add(genreRepository.findByArtGenreId(genre.getGenreList().getArtGenreId()));
                 }
             });
+            if (user != null) {
+                Optional<com.art.api.user.domain.entity.User> optionalUser = memberRepository.findByUserId(user.getUsername());
+                Optional<SaveHist> saved = saveHistRepository.findByArtListAndUser(item, optionalUser.get());
+                if (saved.isPresent()) {
+                    dto.setSaved(true);
+                } else {
+                    dto.setSaved(false);
+                }
+            }else {
+                dto.setSaved(false);
+            }
             list.add(dto);
         }
 
@@ -74,7 +91,7 @@ public class ArtService {
         return result;
     }
 
-    public List<ArtListDTO> convertArtList(List<ArtList> artList) {
+    public List<ArtListDTO> convertArtList(List<ArtList> artList, com.art.api.user.domain.entity.User user) {
         List<ArtListDTO> list = new ArrayList<>();
         artList.forEach(item -> {
 
@@ -94,6 +111,16 @@ public class ArtService {
                     dto.getGenreList().add(genreRepository.findByArtGenreId(genre.getGenreList().getArtGenreId()));
                 }
             });
+            if (user != null) {
+                Optional<SaveHist> saved = saveHistRepository.findByArtListAndUser(item, user);
+                if (saved.isPresent()) {
+                    dto.setSaved(true);
+                } else {
+                    dto.setSaved(false);
+                }
+            }else {
+                dto.setSaved(false);
+            }
             list.add(dto);
         });
         return list;
@@ -101,7 +128,7 @@ public class ArtService {
 
 
 
-    public ArtDetailDTO retrieveArtDetail(String artId) {
+    public ArtDetailDTO retrieveArtDetail(String artId, User user) {
         Optional<ArtList> art = artListRepository.findByArtId(artId);
         if(art.isEmpty()) {
             return null;
@@ -133,11 +160,22 @@ public class ArtService {
                 dto.getGenreList().add(genreRepository.findByArtGenreId(genre.getGenreList().getArtGenreId()));
             }
         });
+        if (user != null) {
+            Optional<com.art.api.user.domain.entity.User> optionalUser = memberRepository.findByUserId(user.getUsername());
+            Optional<SaveHist> saved = saveHistRepository.findByArtListAndUser(art.get(), optionalUser.get());
+            if (saved.isPresent()) {
+                dto.setSaved(true);
+            } else {
+                dto.setSaved(false);
+            }
+        }else {
+            dto.setSaved(false);
+        }
         return dto;
     }
 
     // 메인 테마 list
-    public List<ThemeListDTO> retrieveThemeList(){
+    public List<ThemeListDTO> retrieveThemeList(User user){
         List<Theme> themeList = themeRepository.findAll();
         List<ThemeListDTO> dtoList = new ArrayList<>();
         Collections.sort(themeList);
@@ -173,7 +211,7 @@ public class ArtService {
     }
 
     // 테마 이름별 API
-    public List<ThemeDTO> retrieveThemeByName(String themeNm) {
+    public List<ThemeDTO> retrieveThemeByName(String themeNm, User user) {
         List<ThemeDTO> list = new ArrayList<>();
         Optional<Theme> theme = themeRepository.findByThemeNm(themeNm);
         if(theme.isEmpty()) {

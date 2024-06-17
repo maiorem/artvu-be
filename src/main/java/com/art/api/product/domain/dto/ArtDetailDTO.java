@@ -46,6 +46,8 @@ public class ArtDetailDTO {
     private String contDetail;
 
     private String copyText;
+    private String artSaleYn;
+    private boolean isSaved;
 
     private String trailerUrl;
 
@@ -56,7 +58,7 @@ public class ArtDetailDTO {
     private List<GenreList> genreList = new ArrayList<>();
 
     @QueryProjection
-    public ArtDetailDTO(String artId, String artNm, String artShowAge, String status, int orgPrice, int minPrice, String artStrDt, String artEndDt, String artRuntime, String intermisYn, int intermisMi, String summary, String contDetail, String copyText, ArtFacilityDto theater) {
+    public ArtDetailDTO(String artId, String artNm, String artShowAge, String status, int orgPrice, int minPrice, String artStrDt, String artEndDt, String artRuntime, String intermisYn, int intermisMi, String summary, String contDetail, String copyText, String artSaleYn, ArtFacilityDto theater) {
         this.artId = artId;
         this.artNm = artNm;
         this.artShowAge = artShowAge;
@@ -71,6 +73,7 @@ public class ArtDetailDTO {
         this.summary = summary;
         this.contDetail = contDetail;
         this.copyText = copyText;
+        this.artSaleYn = artSaleYn;
         this.theater = theater;
     }
 
@@ -90,6 +93,7 @@ public class ArtDetailDTO {
                                 artDetail.getSummary(),
                                 artDetail.getContDetail(),
                                 artList.getCopyText(),
+                                artList.getArtSaleYn(),
                                 ArtFacilityDto.of(artList.getArtFacId()));
     }
 
