@@ -102,7 +102,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteUser(User user) {
+    public void deleteUser(HttpServletRequest request, HttpServletResponse response,User user) {
 
         //카카오 연결 해제
         List<HttpMessageConverter<?>> converters = new ArrayList<>();
@@ -122,9 +122,9 @@ public class MemberService {
         map.add("target_id_type", "user_id");
         map.add("target_id", user.getUserId());
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> kakaoRequest = new HttpEntity<>(map, headers);
 
-        String json = restTemplate.postForObject("https://kapi.kakao.com/v1/user/unlink", request, String.class);
+        String json = restTemplate.postForObject("https://kapi.kakao.com/v1/user/unlink", kakaoRequest, String.class);
         log.info("----------------- 응답 결과 -------------------");
         log.info(json);
 
@@ -133,6 +133,10 @@ public class MemberService {
         authSocialRepository.deleteByUser(user);
         userAuthRepository.deleteByUser(user);
         memberRepository.deleteByUserId(user.getUserId());
+
+
+        CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
+        authorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
 
     }
 
