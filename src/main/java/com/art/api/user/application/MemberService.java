@@ -1,13 +1,17 @@
 package com.art.api.user.application;
 
 import com.art.api.common.domain.entity.GenreList;
+import com.art.api.core.auth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.art.api.core.exception.ClientUserNotFoundException;
+import com.art.api.core.utils.CookieUtil;
 import com.art.api.product.domain.entity.ArtGenreMppg;
 import com.art.api.product.domain.entity.ArtList;
 import com.art.api.product.infrastructure.ArtListRepository;
 import com.art.api.user.domain.entity.*;
 import com.art.api.user.domain.model.UpdateUserInfoRequest;
 import com.art.api.user.infrastructure.repository.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,9 +41,12 @@ public class MemberService {
     private final AuthSocialRepository authSocialRepository;
     private final MemberProfileRepository profileRepository;
     private final SaveHistRepository saveHistRepository;
+    private final OAuth2AuthorizationRequestBasedOnCookieRepository authorizationRequestRepository;
 
     @Value("${spring.open-api.kakaoAdminKey}")
     private String kakaoAdminKey;
+
+    private final static String REFRESH_TOKEN = "refresh_token";
 
     /**
      * 로그인 유저정보 가져오기
@@ -62,7 +69,7 @@ public class MemberService {
 
 
 
-    public void logout(String userId) {
+    public void logout(HttpServletRequest request, HttpServletResponse response, String userId) {
         Optional<User> byUserId = memberRepository.findByUserId(userId);
         if (byUserId.isEmpty()) {
             throw new ClientUserNotFoundException();
@@ -85,12 +92,13 @@ public class MemberService {
         map.add("target_id_type", "user_id");
         map.add("target_id", userId);
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> kakaoRequest = new HttpEntity<>(map, headers);
 
-        String json = restTemplate.postForObject("https://kapi.kakao.com/v1/user/logout", request, String.class);
+        String json = restTemplate.postForObject("https://kapi.kakao.com/v1/user/logout", kakaoRequest, String.class);
         log.info("----------------- 응답 결과 -------------------");
         log.info(json);
-
+        CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
+        authorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
     }
 
     @Transactional
