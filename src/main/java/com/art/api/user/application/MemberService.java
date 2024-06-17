@@ -1,33 +1,34 @@
 package com.art.api.user.application;
 
 import com.art.api.common.domain.entity.GenreList;
-import com.art.api.core.exception.KakaoUnlinkFailureException;
+import com.art.api.core.auth.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
+import com.art.api.core.exception.ClientUserNotFoundException;
+import com.art.api.core.utils.CookieUtil;
 import com.art.api.product.domain.entity.ArtGenreMppg;
 import com.art.api.product.domain.entity.ArtList;
 import com.art.api.product.infrastructure.ArtListRepository;
 import com.art.api.user.domain.entity.*;
-import com.art.api.user.domain.model.KakaoUnlinkRequest;
 import com.art.api.user.domain.model.UpdateUserInfoRequest;
 import com.art.api.user.infrastructure.repository.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.Disposable;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 @Slf4j
 @Service
@@ -40,9 +41,12 @@ public class MemberService {
     private final AuthSocialRepository authSocialRepository;
     private final MemberProfileRepository profileRepository;
     private final SaveHistRepository saveHistRepository;
+    private final OAuth2AuthorizationRequestBasedOnCookieRepository authorizationRequestRepository;
 
     @Value("${spring.open-api.kakaoAdminKey}")
     private String kakaoAdminKey;
+
+    private final static String REFRESH_TOKEN = "refresh_token";
 
     /**
      * 로그인 유저정보 가져오기
@@ -63,27 +67,66 @@ public class MemberService {
         return profileRepository.findByUser(user);
     }
 
+
+
+    public void logout(HttpServletRequest request, HttpServletResponse response, String userId) {
+        Optional<User> byUserId = memberRepository.findByUserId(userId);
+        if (byUserId.isEmpty()) {
+            throw new ClientUserNotFoundException();
+        }
+        //카카오 로그아웃 (토큰 만료)
+        List<HttpMessageConverter<?>> converters = new ArrayList<>();
+        converters.add(new FormHttpMessageConverter());
+        converters.add(new StringHttpMessageConverter());
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setMessageConverters(converters);
+
+        //header 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+        headers.add("Authorization", "KakaoAK " + kakaoAdminKey);
+
+        //parameter 세팅
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("target_id_type", "user_id");
+        map.add("target_id", userId);
+
+        HttpEntity<MultiValueMap<String, String>> kakaoRequest = new HttpEntity<>(map, headers);
+
+        String json = restTemplate.postForObject("https://kapi.kakao.com/v1/user/logout", kakaoRequest, String.class);
+        log.info("----------------- 응답 결과 -------------------");
+        log.info(json);
+        CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
+        authorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
+    }
+
     @Transactional
-    public void deleteUser(User user) {
+    public void deleteUser(HttpServletRequest request, HttpServletResponse response,User user) {
 
         //카카오 연결 해제
-        WebClient client = WebClient.builder()
-                .baseUrl("https://kapi.kakao.com/v1/user")
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, String.valueOf(MediaType.APPLICATION_FORM_URLENCODED))
-                .defaultHeader("Authorization", "KakaoAK " + kakaoAdminKey)
-                .build();
+        List<HttpMessageConverter<?>> converters = new ArrayList<>();
+        converters.add(new FormHttpMessageConverter());
+        converters.add(new StringHttpMessageConverter());
 
-        MultiValueMap<String, String> reqeust = new LinkedMultiValueMap<>();
-        reqeust.add("target_id_type", "user_id");
-        reqeust.add("target_id", user.getUserId());
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setMessageConverters(converters);
 
-        Mono<String> response = client.post()
-                .uri("/unlink")
-                .body(BodyInserters.fromFormData(reqeust))
-                .retrieve()
-                .bodyToMono(String.class);
+        //header 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+        headers.add("Authorization", "KakaoAK " + kakaoAdminKey);
 
-        log.info("Kakao unlink : {}", response.block());
+        //parameter 세팅
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("target_id_type", "user_id");
+        map.add("target_id", user.getUserId());
+
+        HttpEntity<MultiValueMap<String, String>> kakaoRequest = new HttpEntity<>(map, headers);
+
+        String json = restTemplate.postForObject("https://kapi.kakao.com/v1/user/unlink", kakaoRequest, String.class);
+        log.info("----------------- 응답 결과 -------------------");
+        log.info(json);
 
         saveHistRepository.deleteByUser(user);
         profileRepository.deleteByUser(user);
@@ -91,7 +134,12 @@ public class MemberService {
         userAuthRepository.deleteByUser(user);
         memberRepository.deleteByUserId(user.getUserId());
 
+
+        CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
+        authorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
+
     }
+
 
 
     @Transactional
@@ -194,4 +242,13 @@ public class MemberService {
         List<ArtList> suggestList = artListRepository.findSuggestList(genreList);
         return suggestList;
     }
+
+    public User findByUserId(String userId) {
+        Optional<User> byUserId = memberRepository.findByUserId(userId);
+        if (byUserId.isEmpty()) {
+            throw new ClientUserNotFoundException();
+        }
+        return byUserId.get();
+    }
+
 }

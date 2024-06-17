@@ -22,6 +22,7 @@ public class ArtListDTO {
     private String artCateNm;
     private String artShowAge;
     private String artSaleYn;
+    private boolean isSaved;
     private String area;
     private String posterImgUrl;
     private List<GenreList> genreList = new ArrayList<>();
