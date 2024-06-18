@@ -137,11 +137,12 @@ public class ArtService {
         if (detail.isEmpty()) {
             return null;
         }
-        Optional<ArtTime> time = timeRepository.findByArtlist(art.get());
-        if (time.isEmpty()) {
-            return null;
+        Optional<ArtTime> optionalArtTime = timeRepository.findByArtlist(art.get());
+        ArtTime time = null;
+        if (optionalArtTime.isPresent()) {
+            time = optionalArtTime.get();
         }
-        ArtDetailDTO dto = ArtDetailDTO.convertEntityToDto(art.get(), detail.get(), time.get());
+        ArtDetailDTO dto = ArtDetailDTO.convertEntityToDto(art.get(), detail.get(), time);
 
         Optional<List<ArtMovie>> artMovieListOptinal = discoverRepository.findAllByArtlist(art.get());
         artMovieListOptinal.ifPresent(artMovieList -> {
