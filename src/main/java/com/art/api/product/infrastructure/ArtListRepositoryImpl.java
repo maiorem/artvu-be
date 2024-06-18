@@ -53,7 +53,7 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
 
         List<ArtList> result = jpaQueryFactory
                 .selectFrom(artList)
-                .leftJoin(artList.artGenreMppgs, artGenreMppg)
+                .leftJoin(artGenreMppg)
                 .on(artList.artId.eq(artGenreMppg.artList.artId))
                 .where( isExistKeyword(genre, local, search) )
                 .offset(pageable.getOffset())
@@ -65,7 +65,7 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
         Long count = jpaQueryFactory.
                 select(artList.artId.countDistinct())
                 .from(artList)
-                .leftJoin(artList.artGenreMppgs, artGenreMppg)
+                .leftJoin(artGenreMppg)
                 .on(artList.artId.eq(artGenreMppg.artList.artId))
                 .where( isExistKeyword(genre, local, search) )
                 .fetchOne();
@@ -101,7 +101,7 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
     public List<ArtList> findSuggestList(List<GenreList> genreList) {
         return jpaQueryFactory
                 .selectFrom(artList)
-                .leftJoin(artList.artGenreMppgs, artGenreMppg)
+                .leftJoin(artGenreMppg)
                 .on(artList.artId.eq(artGenreMppg.artList.artId))
                 .where(artGenreMppg.genreList.in(genreList))
                 .limit(6)
