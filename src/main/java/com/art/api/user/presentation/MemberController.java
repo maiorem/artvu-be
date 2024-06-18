@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -74,8 +75,8 @@ public class MemberController {
 
     @PostMapping("/logout")
     @Operation(summary = "회원 로그아웃")
-    public ApiResponse logout(@AuthenticationPrincipal @Parameter(hidden = true) org.springframework.security.core.userdetails.User user) {
-        memberService.logout(user.getUsername());
+    public ApiResponse logout(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal @Parameter(hidden = true) org.springframework.security.core.userdetails.User user) {
+        memberService.logout(request, response, user.getUsername());
         return ApiResponse.success("data", "로그아웃이 정상적으로 완료되었습니다.");
     }
 
@@ -91,9 +92,9 @@ public class MemberController {
 
     @DeleteMapping("/user")
     @Operation(summary = "회원탈퇴", description = "회원 탈퇴하기(무조건 삭제)")
-    public ApiResponse<?> userWithDraw() {
+    public ApiResponse<?> userWithDraw(HttpServletRequest request, HttpServletResponse response) {
         User user = securityUserInfo();
-        memberService.deleteUser(user);
+        memberService.deleteUser(request, response, user);
         return ApiResponse.success("data", "회원 탈퇴가 정상적으로 처리되었습니다.");
     }
 
