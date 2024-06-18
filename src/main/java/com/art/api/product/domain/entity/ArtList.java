@@ -73,17 +73,8 @@ public class ArtList {
     @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "artList")
-    private List<ArtGenreMppg> artGenreMppgs = new ArrayList<>();
-
-    @JsonIgnore
-    @Builder.Default
-    @OneToMany(mappedBy = "artList")
     private List<ArtImg> artImgList = new ArrayList<>();
 
-    @JsonIgnore
-    @Builder.Default
-    @OneToMany(mappedBy = "artList")
-    private List<ThemeHist> themeList = new ArrayList<>();
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

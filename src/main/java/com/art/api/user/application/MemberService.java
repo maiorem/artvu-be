@@ -6,6 +6,7 @@ import com.art.api.core.exception.ClientUserNotFoundException;
 import com.art.api.core.utils.CookieUtil;
 import com.art.api.product.domain.entity.ArtGenreMppg;
 import com.art.api.product.domain.entity.ArtList;
+import com.art.api.product.infrastructure.ArtGenreMppgRepository;
 import com.art.api.product.infrastructure.ArtListRepository;
 import com.art.api.user.domain.entity.*;
 import com.art.api.user.domain.model.UpdateUserInfoRequest;
@@ -41,6 +42,7 @@ public class MemberService {
     private final AuthSocialRepository authSocialRepository;
     private final MemberProfileRepository profileRepository;
     private final SaveHistRepository saveHistRepository;
+    private final ArtGenreMppgRepository mappRepository;
     private final OAuth2AuthorizationRequestBasedOnCookieRepository authorizationRequestRepository;
 
     @Value("${spring.open-api.kakaoAdminKey}")
@@ -218,9 +220,11 @@ public class MemberService {
         Map<GenreList, Integer> genreCount = new HashMap<>();
         for (SaveHist saveHist : saveHistList) {
             Optional<ArtList> artOptional = artListRepository.findByArtId(saveHist.getArtList().getArtId());
-            List<ArtGenreMppg> genreMppgs = artOptional.get().getArtGenreMppgs();
-            for (ArtGenreMppg genreMppg : genreMppgs) {
-                genreCount.put(genreMppg.getGenreList(), genreCount.getOrDefault(genreMppg.getGenreList(), 0)+1);
+            Optional<List<ArtGenreMppg>> genreMppgs = mappRepository.findAllByArtList(artOptional.get());
+            if (genreMppgs.isPresent()) {
+                for (ArtGenreMppg genreMppg : genreMppgs.get()) {
+                    genreCount.put(genreMppg.getGenreList(), genreCount.getOrDefault(genreMppg.getGenreList(), 0) + 1);
+                }
             }
 
         }
