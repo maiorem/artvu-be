@@ -72,7 +72,7 @@ public class ArtList {
 
     @JsonIgnore
     @Builder.Default
-    @OneToMany(mappedBy = "artList")
+    @OneToMany(mappedBy = "artList", cascade = CascadeType.ALL)
     private List<ArtGenreMppg> artGenreMppgs = new ArrayList<>();
 
     @JsonIgnore
