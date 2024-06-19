@@ -3,7 +3,6 @@ package com.art.api.user.presentation;
 import com.art.api.common.domain.entity.GenreList;
 import com.art.api.core.exception.ClientUserNotFoundException;
 import com.art.api.core.response.ApiResponse;
-import com.art.api.core.utils.HeaderUtil;
 import com.art.api.product.application.ArtService;
 import com.art.api.product.domain.dto.ArtListDTO;
 import com.art.api.product.domain.entity.ArtList;
@@ -150,14 +149,14 @@ public class MemberController {
 
     @GetMapping("/suggest")
     @Operation(summary = "추천 공연 목록")
-    public ApiResponse<?> retrieveListSuggestList(){
+    public ApiResponse<?> retrieveListSuggestList(@AuthenticationPrincipal @Parameter(hidden = true) org.springframework.security.core.userdetails.User userdetails){
         User user = securityUserInfo();
         // 유저가 저장한 공연이 세개 이하면 빈 값 반환
         Long count = memberService.countSaveHistByUser(user);
         if (count < 3) {
             return ApiResponse.notEnoughData();
         } else {
-            List<ArtListDTO> artList = artService.convertArtList(memberService.retrieveListSuggestList(user), user);
+            List<ArtListDTO> artList = artService.convertArtList(memberService.retrieveListSuggestList(user), userdetails);
             if (artList == null) {
                 return ApiResponse.notExistData();
             }
