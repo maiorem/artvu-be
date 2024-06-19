@@ -99,6 +99,7 @@ public class MemberService {
         String json = restTemplate.postForObject("https://kapi.kakao.com/v1/user/logout", kakaoRequest, String.class);
         log.info("----------------- 응답 결과 -------------------");
         log.info(json);
+        // 쿠키삭제
         CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
         authorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
     }
@@ -136,7 +137,7 @@ public class MemberService {
         userAuthRepository.deleteByUser(user);
         memberRepository.deleteByUserId(user.getUserId());
 
-
+        // 쿠키삭제
         CookieUtil.deleteCookie(request, response, REFRESH_TOKEN);
         authorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
 
@@ -210,8 +211,7 @@ public class MemberService {
         for (SaveHist saveHist : saveHistList) {
             saveArtIdList.add(saveHist.getArtList().getArtId());
         }
-        Page<ArtList> artListPage = artListRepository.findSaveResult(pagable, saveArtIdList);
-        return artListPage;
+        return artListRepository.findSaveResult(pagable, saveArtIdList);
     }
 
     // 선호 장르 목록 (map : { 장르명 : 갯수 }
@@ -243,8 +243,7 @@ public class MemberService {
                 genreList.add(genre);
             }
         }
-        List<ArtList> suggestList = artListRepository.findSuggestList(genreList);
-        return suggestList;
+        return artListRepository.findSuggestList(genreList);
     }
 
     public User findByUserId(String userId) {
