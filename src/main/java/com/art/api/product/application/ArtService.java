@@ -24,10 +24,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -161,6 +159,11 @@ public class ArtService {
                 dto.getGenreList().add(genreRepository.findByArtGenreId(genre.getGenreList().getArtGenreId()));
             }
         });
+        loginUserIsSaved(user, art, dto);
+        return dto;
+    }
+
+    private void loginUserIsSaved(User user, Optional<ArtList> art, ArtDetailDTO dto) {
         if (user != null) {
             Optional<com.art.api.user.domain.entity.User> optionalUser = memberRepository.findByUserId(user.getUsername());
             Optional<SaveHist> saved = saveHistRepository.findByArtListAndUser(art.get(), optionalUser.get());
@@ -172,41 +175,40 @@ public class ArtService {
         }else {
             dto.setSaved(false);
         }
-        return dto;
     }
 
     // 메인 테마 list
     public List<ThemeListDTO> retrieveThemeList(User user){
-        List<Theme> themeList = themeRepository.findAll();
         List<ThemeListDTO> dtoList = new ArrayList<>();
-        Collections.sort(themeList);
-        for (Theme theme : themeList) {
-            List<ThemeDTO> list = new ArrayList<>();
-            Optional<List<ThemeHist>> themeHistList = themeHistRepository.findByTheme(theme);
-            if (themeHistList.isPresent()) {
+        List<ThemeDTO> list = themeRepository.findMainTheme();
 
-                for (ThemeHist themeHist : themeHistList.get()) {
-                    Optional<ArtList> art = artListRepository.findByArtId(themeHist.getArtList().getArtId());
-                    if (art.isEmpty()) {
-                        throw new ItemNotFoundException();
+        if (list != null) {
+            for (ThemeDTO themeDTO : list) {
+
+                Optional<ArtList> byArtId = artListRepository.findByArtId(themeDTO.getArtId());
+                if (user != null) {
+                    Optional<com.art.api.user.domain.entity.User> optionalUser = memberRepository.findByUserId(user.getUsername());
+                    Optional<SaveHist> saved = saveHistRepository.findByArtListAndUser(byArtId.get(), optionalUser.get());
+                    if (saved.isPresent()) {
+                        themeDTO.setSaved(true);
+                    } else {
+                        themeDTO.setSaved(false);
                     }
-                    ThemeDTO dto = ThemeDTO.convertEntityToDto(art.get(), theme);
-                    Optional<List<ArtImg>> artImgList = imgListRepository.findAllByArtList(art.get());
-                    String posterUrl = "";
-                    if(artImgList.isPresent()) {
-                        posterUrl = artImgList.get().stream().filter(n -> n.getClsCode().equals(ClsCode.KOPIS)).findAny().orElse(ArtImg.builder().imgUrl("").build()).getImgUrl();
-                    }
-                    dto.setPosterImgUrl(posterUrl);
-                    list.add(dto);
+                }else {
+                    themeDTO.setSaved(false);
                 }
-            } else {
-                return null;
             }
-            ThemeListDTO newListDto = ThemeListDTO.convertEntityToDto(theme);
-            newListDto.setContents(list);
-            dtoList.add(newListDto);
+            List<List<ThemeDTO>> lists = new ArrayList<>(list.stream().collect(Collectors.groupingBy(themeDTO -> themeDTO.getThemeNm())).values());
+            for (List<ThemeDTO> themeDTOS : lists) {
+                ThemeListDTO newListDto = new ThemeListDTO();
+                newListDto.setThemeNm(themeDTOS.get(0).getThemeNm());
+                newListDto.setThemeOrdNo(themeDTOS.get(0).getThemeOrdNo());
+                newListDto.setContents(themeDTOS);
+                dtoList.add(newListDto);
+            }
+        } else {
+            return null;
         }
-
         return dtoList;
 
     }

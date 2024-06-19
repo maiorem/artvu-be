@@ -2,6 +2,7 @@ package com.art.api.product.infrastructure;
 
 import com.art.api.product.domain.dto.ThemeDTO;
 import com.art.api.product.domain.dto.ThemeListDTO;
+import com.art.api.product.domain.entity.ClsCode;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +31,17 @@ public class ThemeRepositoryImpl implements ThemeRepositoryCustom{
                         artList.copyText,
                         artList.artCateNm,
                         artList.artShowAge,
-                        artList.artSaleYn)
+                        artList.artSaleYn,
+                        artImg.imgUrl.as("posterImgUrl"))
                 )
-                .from(theme, artList)
-                .leftJoin(themeHist)
+                .from(theme)
+                .join(themeHist)
                 .on(theme.themeId.eq(themeHist.theme.themeId))
+                .join(artList)
                 .on(artList.artId.eq(themeHist.artList.artId))
+                .leftJoin(artImg)
+                .on(artList.artId.eq(artImg.artList.artId))
+                .on(artImg.clsCode.eq(ClsCode.KOPIS))
                 .orderBy(theme.themeOrdNo.asc())
                 .fetch();
 
