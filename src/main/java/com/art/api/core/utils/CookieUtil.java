@@ -50,11 +50,12 @@ public class CookieUtil {
         if(cookies != null && cookies.length > 0) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(name)) {
-                    cookie.setValue("");
-                    cookie.setPath("/");
-                    cookie.setMaxAge(0);
-
-                    response.addCookie(cookie);
+                    ResponseCookie responseCookie = ResponseCookie.from(name, "")
+                            .domain(".artvu.co.kr")
+                            .path("/")
+                            .maxAge(0)
+                            .build();
+                    response.addHeader("Set-Cookie", responseCookie.toString());
                 }
             }
         }

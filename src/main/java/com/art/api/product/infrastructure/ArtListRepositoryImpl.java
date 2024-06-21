@@ -3,8 +3,8 @@ package com.art.api.product.infrastructure;
 
 import com.art.api.common.domain.entity.GenreList;
 import com.art.api.product.domain.entity.ArtList;
-import com.art.api.user.domain.entity.SaveHist;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -12,16 +12,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.group.GroupBy.list;
 import static com.art.api.product.domain.entity.QArtList.artList;
 import static com.art.api.product.domain.entity.QArtGenreMppg.artGenreMppg;
 import static com.art.api.user.domain.entity.QSaveHist.saveHist;
-import static com.art.api.user.domain.entity.QUser.user;
 
 
 @RequiredArgsConstructor
@@ -53,21 +49,23 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
 
         List<ArtList> result = jpaQueryFactory
                 .selectFrom(artList)
-                .leftJoin(artList.artGenreMppgs, artGenreMppg)
+                .leftJoin(artGenreMppg)
                 .on(artList.artId.eq(artGenreMppg.artList.artId))
                 .where( isExistKeyword(genre, local, search) )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .groupBy(artList.artId)
+                .orderBy(artList.artSaleYn.desc(), Expressions.stringTemplate("FIELD({0}, {1})", artList.status, "공연중").desc(), artList.minPriceRegDt.desc())
                 .fetch()
                 .stream().distinct().collect(Collectors.toList());
 
         Long count = jpaQueryFactory.
                 select(artList.artId.countDistinct())
                 .from(artList)
-                .leftJoin(artList.artGenreMppgs, artGenreMppg)
+                .leftJoin(artGenreMppg)
                 .on(artList.artId.eq(artGenreMppg.artList.artId))
                 .where( isExistKeyword(genre, local, search) )
+                .orderBy(artList.artSaleYn.desc(), Expressions.stringTemplate("FIELD({0}, {1})", artList.status, "공연중").desc(), artList.minPriceRegDt.desc())
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, count);
@@ -101,7 +99,7 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
     public List<ArtList> findSuggestList(List<GenreList> genreList) {
         return jpaQueryFactory
                 .selectFrom(artList)
-                .leftJoin(artList.artGenreMppgs, artGenreMppg)
+                .leftJoin(artGenreMppg)
                 .on(artList.artId.eq(artGenreMppg.artList.artId))
                 .where(artGenreMppg.genreList.in(genreList))
                 .limit(6)
