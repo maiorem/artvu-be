@@ -35,16 +35,6 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo  {
         return (String) kakaoAccount.get("email");
     }
 
-    @Override
-    public String getGender() {
-        Map<String, Object> kakoAccount = (Map<String, Object>) attributes.get("kakao_account");
-
-        if(kakoAccount == null) {
-            return null;
-        }
-
-        return (String) kakoAccount.get("gender");
-    }
 
     @Override
     public String getImageUrl() {

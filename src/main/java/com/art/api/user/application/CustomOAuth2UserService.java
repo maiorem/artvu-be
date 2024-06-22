@@ -95,7 +95,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         UserAuth userAuth = UserAuth.builder()
                         .user(clientUser)
-                        .sex(Gender.valueOf(clientUserInfo.getGender().toUpperCase()))
                         .email(clientUserInfo.getEmail())
                         .authDt(now)
                         .build();
