@@ -58,7 +58,6 @@ public class AuthToken {
                     .getBody();
         } catch (SecurityException | io.jsonwebtoken.security.SignatureException | MalformedJwtException |
                 ExpiredJwtException | IllegalArgumentException e) {
-            log.info("토큰이 유효하지 않습니다.");
             return null;
         }
     }
