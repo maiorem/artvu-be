@@ -18,25 +18,18 @@ import java.util.stream.Collectors;
 import static com.art.api.product.domain.entity.QArtList.artList;
 import static com.art.api.product.domain.entity.QArtGenreMppg.artGenreMppg;
 import static com.art.api.user.domain.entity.QSaveHist.saveHist;
-
+import static com.art.api.product.domain.entity.QArtDetail.artDetail;
 
 @RequiredArgsConstructor
 public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    private Long artListCount() {
-        return jpaQueryFactory.
-                select(artList.count())
-                .from(artList)
-                .fetchOne();
-    }
-
     private BooleanBuilder isExistKeyword(List<String> genre, String local, String search) {
         BooleanBuilder builder = new BooleanBuilder();
         if(!StringUtils.isEmpty(local)) builder.and(artList.areaCode.areaNm.eq(local));
         if(!StringUtils.isEmpty(search)) builder.and(
-                artList.artNm.contains(search).or(artList.copyText.contains(search))
+                artList.artNm.contains(search).or(artList.copyText.contains(search)).or(artDetail.artActor.contains(search)).or(artDetail.artStaff.contains(search))
         );
         if(genre != null && !genre.isEmpty()) {
             builder.and(artGenreMppg.genreList.artGenreNm.in(genre));
@@ -49,6 +42,8 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
 
         List<ArtList> result = jpaQueryFactory
                 .selectFrom(artList)
+                .join(artDetail)
+                .on(artList.artId.eq(artDetail.artId))
                 .leftJoin(artGenreMppg)
                 .on(artList.artId.eq(artGenreMppg.artList.artId))
                 .where( isExistKeyword(genre, local, search) )
@@ -62,13 +57,14 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
         Long count = jpaQueryFactory.
                 select(artList.artId.countDistinct())
                 .from(artList)
+                .join(artDetail)
+                .on(artList.artId.eq(artDetail.artId))
                 .leftJoin(artGenreMppg)
                 .on(artList.artId.eq(artGenreMppg.artList.artId))
                 .where( isExistKeyword(genre, local, search) )
-                .orderBy(artList.artSaleYn.desc(), Expressions.stringTemplate("FIELD({0}, {1})", artList.status, "공연중").desc(), artList.minPriceRegDt.desc())
                 .fetchOne();
 
-        return new PageImpl<>(result, pageable, count);
+        return new PageImpl<>(result, pageable, count != null ? count : 0);
     }
 
     @Override
@@ -92,7 +88,7 @@ public class ArtListRepositoryImpl implements ArtListRepositoryCustum {
                 .where(artList.artId.in(saveArtIdList))
                 .fetchOne();
 
-        return new PageImpl<>(result, pageable, count);
+        return new PageImpl<>(result, pageable, count != null ? count : 0);
     }
 
     @Override
