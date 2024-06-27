@@ -5,7 +5,6 @@ import com.art.api.common.domain.entity.GenreList;
 import com.art.api.discover.domain.entity.ArtMovie;
 import com.art.api.product.domain.entity.ArtList;
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,9 +14,10 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class DiscoveryDTO {
 
+    private String artId;
     private String artNm;
 
     private String artShowAge;
@@ -38,7 +38,8 @@ public class DiscoveryDTO {
 
 
     @QueryProjection
-    public DiscoveryDTO(String artNm, String artShowAge, String discoverTitl, String discoverCont, String mvUrl) {
+    public DiscoveryDTO(String artId, String artNm, String artShowAge, String discoverTitl, String discoverCont, String mvUrl) {
+        this.artId = artId;
         this.artNm = artNm;
         this.artShowAge = artShowAge;
         this.discoverCont = discoverCont;
@@ -47,7 +48,7 @@ public class DiscoveryDTO {
     }
 
     public static DiscoveryDTO convertEntityToDto(ArtList artList, ArtMovie movie) {
-        return new DiscoveryDTO(artList.getArtNm(), artList.getArtShowAge(), movie.getDiscoverTitl(), movie.getDiscoverCont(), movie.getMvUrl());
+        return new DiscoveryDTO(artList.getArtId(), artList.getArtNm(), artList.getArtShowAge(), movie.getDiscoverTitl(), movie.getDiscoverCont(), movie.getMvUrl());
     }
 
 
