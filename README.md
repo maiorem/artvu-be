@@ -8,6 +8,12 @@
 - 공연 정보 출처 : 공연예술 통합전산망 ([https://www.kopis.or.kr](https://www.kopis.or.kr/por/main/main.do))
 - 화면 : Next.js / 소스관리 : Gitlab / CICD : Jenkins
 
+### 사용 기술
+** Language** : java        
+** Framework** : Spring Boot (API 서버), Spring Batch (배치 서버), Spring Webflux (WebClient), Spring Security (Security)        
+** DB** : MySQL (dev), MariaDB (prod), JPA, QueryDSL          
+** Authorization** : OAuth2.0 + JWT         
+
 ### 배치 소스
 https://github.com/maiorem/artvu-batch
 
