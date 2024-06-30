@@ -11,7 +11,7 @@
 ### 사용 기술
 **Language** : java        
 **Framework** : Spring Boot (API 서버), Spring Batch (배치 서버), Spring Webflux (WebClient), Spring Security (Security)        
-**DB** : MySQL (dev), MariaDB (prod), JPA, QueryDSL          
+**DB** : MariaDB, JPA, QueryDSL          
 **Authorization** : OAuth2.0 + JWT         
 
 ### 배치 소스
