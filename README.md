@@ -12,7 +12,7 @@
 https://github.com/maiorem/artvu-batch
 
 ### ERD
-<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FY6jLg%2FbtsIg7wyUqF%2F5RbnSvaMGxAoKzTomH6iBK%2Fimg.png" />
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FplWpN%2FbtsIhR0OHZ3%2Fws9VVrkYJ2sXy6t6sJ9jF0%2Fimg.png" />
 
 ## 공연 정보 서비스 제공 흐름
 <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FY6jLg%2FbtsIg7wyUqF%2F5RbnSvaMGxAoKzTomH6iBK%2Fimg.png" />
