@@ -73,6 +73,6 @@ https://github.com/maiorem/artvu-batch
 
 ### API 제공 목록
 
-[공연정보 (리스트/상세)](https://www.notion.so/1d7b0d9f09b743caad61364a19ed31d8?pvs=21)
+[공연정보 (리스트/상세)](https://zany-duke-0f6.notion.site/1d7b0d9f09b743caad61364a19ed31d8?v=291e93579b46474383ffe26b2c39d328&pvs=4)
 
-[마이페이지](https://www.notion.so/25b9b6a2ff6c41fc9ce836205a49b51f?pvs=21)
+[마이페이지](https://zany-duke-0f6.notion.site/25b9b6a2ff6c41fc9ce836205a49b51f?v=0c4cee0210b540148f9fce5563ca3304&pvs=4)
