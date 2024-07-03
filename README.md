@@ -68,3 +68,11 @@ https://github.com/maiorem/artvu-batch
 
 - 우선은 변경해도 전체 서비스 흐름에 큰 문제가 없는 모듈을 변경함. 외부 API 호출에 WebClient 대신 RestTemplete을 사용하도록 하고 Cookie 대신 “.도메인” 방식을 지원하는 ResponseCookie를 사용함.
 - 다만 이번 문제는 새로운 툴을 도입하는 과정에서 기존 모듈과의 충돌을 잘 알아보지 않았다는 지점을 반성하고 이후에는 기술 사이의 충돌과 버전 문제에 대해 잘 알아보는 습관을 가지도록 유의했다.
+
+
+
+### API 제공 목록
+
+[공연정보 (리스트/상세)](https://www.notion.so/1d7b0d9f09b743caad61364a19ed31d8?pvs=21)
+
+[마이페이지](https://www.notion.so/25b9b6a2ff6c41fc9ce836205a49b51f?pvs=21)
